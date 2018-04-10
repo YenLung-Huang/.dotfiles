@@ -2,21 +2,21 @@
 call plug#begin('~/.vim/plugged')
 
 Plug 'VundleVim/Vundle.vim'
+
 Plug 'tpope/vim-fugitive'
 " Plug 'git://git.wincent.com/command-t.git'
 Plug 'scrooloose/nerdtree'
 " Airline
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Tomorrow Theme
-Plug 'chriskempson/vim-tomorrow-theme'
+" OneDark Theme
+Plug 'joshdick/onedark.vim'
 " Vim Emmet
 Plug 'mattn/emmet-vim'
 " Javascript-libraries-sytax.vim
 Plug 'othree/javascript-libraries-syntax.vim'
 " Surrond vim
 Plug 'tpope/vim-surround'
+
 Plug 'scrooloose/nerdcommenter'
 " Vim signature mark improvement
 Plug 'kshenoy/vim-signature'
@@ -32,10 +32,11 @@ Plug 'kana/vim-textobj-entire'
 Plug 'junegunn/vim-easy-align'
 " Multiyple cursors
 Plug 'terryma/vim-multiple-cursors'
-" javascript-libraries-syntax
-Plug 'othree/javascript-libraries-syntax.vim'
-" php plug
-Plug 'StanAngeloff/php.vim'
+" Php series
+Plug 'sheerun/vim-polyglot'
+Plug '2072/PHP-Indenting-for-VIm'
+Plug 'jiangmiao/auto-pairs'
+Plug 'nelsyeung/twig.vim'
 " Initialize plugin system
 call plug#end()
 
@@ -43,13 +44,7 @@ nnoremap <Up> :echomsg "use k"<cr>
 nnoremap <Down> :echomsg "use j"<cr>
 nnoremap <Left> :echomsg "use h"<cr>
 nnoremap <Right> :echomsg "use l"<cr>
-" buffer short cut
-nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> ]b :bnext<CR>
-nnoremap <silent> [B :bfirst<CR>
-nnoremap <silent> ]B :blast<CR>
-" nohlsearch shortcut
-nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+inoremap <C-c> <Esc>
 
 " don't make vim compatible with vi
 set nocompatible
@@ -78,15 +73,16 @@ let maplocalleader="-"
 
 "  Font
 if has('gui_running')
-  set guifont=Hack:h12
+        set guifont=Hack:h12
 endif
 " Some basic PSR code style rules
 " ts = tabstop; sts = softtabstop; sw = shiftwidth
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
+autocmd Filetype vue setlocal ts=2 sts=2 sw=2
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
 autocmd Filetype javascript setlocal ts=4 sts=4 sw=4
 autocmd Filetype php setlocal ts=4 sts=4 sw=4
-
+autocmd Filetype twig setlocal ts=4 sts=4 sw=4
 " Use spaces instead to tabs
 set expandtab
 " No wrap
@@ -115,10 +111,8 @@ set background=dark
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep ='|'
-let g:airline_theme='tomorrow'
+let g:airline_theme='onedark'
 let g:airline_powerline_fonts = 1
-
-colorscheme Tomorrow-Night
 
 " nerdCommenter Settings"
 let g:NERDSpaceDelims=1
@@ -129,26 +123,15 @@ let g:ctrlp_map = '<leader>p'
 let g:ctrlp_cmd = 'CtrlP'
 map <leader>f :CtrlPMRU<CR>
 let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
-    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
-    \ }
+                        \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
+                        \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
+                        \ }
 let g:ctrlp_working_path_mode=0
 let g:ctrlp_match_window_bottom=1
 let g:ctrlp_max_height=15
 let g:ctrlp_match_window_reversed=0
 let g:ctrlp_mruf_max=500
 let g:ctrlp_follow_symlinks=1
-
-" ConEmu
-if !empty($CONEMUBUILD)
-    echom "Running in conemu"
-    set termencoding=utf8
-    set term=xterm
-    set t_Co=256
-    let &t_AB="\e[48;5;%dm"
-    let &t_AF="\e[38;5;%dm"
-    colorscheme tomorrow-night
-endif
 
 " Automatically removing all trailing whitespace
 autocmd BufWritePre * %s/\s\+$//e
@@ -172,8 +155,27 @@ let g:multi_cursor_skip_key='<C-k>'
 let g:multi_cursor_quit_key='<Esc>'
 
 if !exists('g:easy_align_delimiters')
-  let g:easy_align_delimiters = {}
+        let g:easy_align_delimiters = {}
 endif
+
 let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String'] }
+let g:onedark_terminal_italics  = 1
+
+"...
+colorscheme onedark
+
+" if has("gui_running")
+        " highlight Cursor guifg=black guibg=white
+        " highlight iCursor guifg=black guibg=white
+        " set guicursor=n-v-c:block-Cursor
+        " set guicursor+=i:ver100-iCursor
+        " set guicursor+=n-v-c:blinkon0
+        " set guicursor+=i:blinkwait1
+" endif
+
+"Force cursor styling in nvim+tmux per <https://github.com/neovim/neovim/wiki/Following-HEAD#20170402>
+if (has("nvim") && !empty($TMUX))
+  set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
+endif
 
 au BufReadPost *.vue set syntax=html
