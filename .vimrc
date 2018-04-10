@@ -44,7 +44,13 @@ nnoremap <Up> :echomsg "use k"<cr>
 nnoremap <Down> :echomsg "use j"<cr>
 nnoremap <Left> :echomsg "use h"<cr>
 nnoremap <Right> :echomsg "use l"<cr>
-inoremap <C-c> <Esc>
+" buffer short cut
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [B :bfirst<CR>
+nnoremap <silent> ]B :blast<CR>
+" nohlsearch shortcut
+nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
 " don't make vim compatible with vi
 set nocompatible
@@ -73,7 +79,7 @@ let maplocalleader="-"
 
 "  Font
 if has('gui_running')
-        set guifont=Hack:h12
+  set guifont=Hack:h12
 endif
 " Some basic PSR code style rules
 " ts = tabstop; sts = softtabstop; sw = shiftwidth
