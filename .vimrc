@@ -52,6 +52,7 @@ nnoremap <silent> ]B :blast<CR>
 " nohlsearch shortcut
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
+inoremap <C-c> <Esc>
 " don't make vim compatible with vi
 set nocompatible
 " Syntax highlighting
