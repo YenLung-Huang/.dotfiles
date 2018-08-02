@@ -12,6 +12,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'joshdick/onedark.vim'
 " Vim Emmet
 Plug 'mattn/emmet-vim'
+" Syntastic
+Plug 'vim-syntastic/syntastic'
 " Javascript-libraries-sytax.vim
 Plug 'othree/javascript-libraries-syntax.vim'
 " Surrond vim
@@ -30,8 +32,6 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
 " Easy Align
 Plug 'junegunn/vim-easy-align'
-" Multiyple cursors
-Plug 'terryma/vim-multiple-cursors'
 " Php series
 Plug 'sheerun/vim-polyglot'
 Plug '2072/PHP-Indenting-for-VIm'
@@ -85,11 +85,14 @@ endif
 " Some basic PSR code style rules
 " ts = tabstop; sts = softtabstop; sw = shiftwidth
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
+autocmd Filetype scss setlocal ts=2 sts=2 sw=2
 autocmd Filetype vue setlocal ts=2 sts=2 sw=2
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
 autocmd Filetype javascript setlocal ts=4 sts=4 sw=4
 autocmd Filetype php setlocal ts=4 sts=4 sw=4
 autocmd Filetype twig setlocal ts=4 sts=4 sw=4
+
+set scrolloff=3
 " Use spaces instead to tabs
 set expandtab
 " No wrap
@@ -152,6 +155,16 @@ set guioptions-=L  "remove left-hand scroll bar
 vmap <Leader>a <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap <Leader>a <Plug>(EasyAlign)
+
+" Syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 " Vim multiple cursors
 " Multiple cursors
