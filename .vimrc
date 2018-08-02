@@ -8,6 +8,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdtree'
 " Airline
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 " OneDark Theme
 Plug 'joshdick/onedark.vim'
 " Vim Emmet
@@ -32,9 +34,15 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
 " Easy Align
 Plug 'junegunn/vim-easy-align'
-" Php series
-Plug 'sheerun/vim-polyglot'
-Plug '2072/PHP-Indenting-for-VIm'
+" Multiyple cursors
+Plug 'terryma/vim-multiple-cursors'
+" javascript-libraries-syntax
+Plug 'othree/javascript-libraries-syntax.vim'
+" php plug
+Plug 'StanAngeloff/php.vim'
+" YouCompleteMe
+Plug 'Valloric/YouCompleteMe'
+" Auto Pair
 Plug 'jiangmiao/auto-pairs'
 Plug 'nelsyeung/twig.vim'
 " Initialize plugin system
@@ -49,12 +57,15 @@ nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
+map <silent> <C-C> <Esc>
 " nohlsearch shortcut
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
 inoremap <C-c> <Esc>
 " don't make vim compatible with vi
 set nocompatible
+
+set path+=**
 " Syntax highlighting
 syntax on
 " Line numbers
@@ -133,9 +144,9 @@ let g:ctrlp_map = '<leader>p'
 let g:ctrlp_cmd = 'CtrlP'
 map <leader>f :CtrlPMRU<CR>
 let g:ctrlp_custom_ignore = {
-                        \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
-                        \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
-                        \ }
+    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
+    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
+    \ }
 let g:ctrlp_working_path_mode=0
 let g:ctrlp_match_window_bottom=1
 let g:ctrlp_max_height=15
@@ -143,6 +154,7 @@ let g:ctrlp_match_window_reversed=0
 let g:ctrlp_mruf_max=500
 let g:ctrlp_follow_symlinks=1
 
+colorscheme onedark
 " Automatically removing all trailing whitespace
 autocmd BufWritePre * %s/\s\+$//e
 
@@ -175,7 +187,7 @@ let g:multi_cursor_skip_key='<C-k>'
 let g:multi_cursor_quit_key='<Esc>'
 
 if !exists('g:easy_align_delimiters')
-        let g:easy_align_delimiters = {}
+  let g:easy_align_delimiters = {}
 endif
 
 let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String'] }
@@ -198,4 +210,16 @@ if (has("nvim") && !empty($TMUX))
   set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 endif
 
-au BufReadPost *.vue set syntax=html
+let g:ycm_semantic_triggers =  {
+  \   'c' : ['->', '.', ' ', '(', '[', '&'],
+  \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
+  \             're!\[.*\]\s'],
+  \   'ocaml' : ['.', '#'],
+  \   'cpp,objcpp' : ['->', '.', '::'],
+  \   'perl' : ['->'],
+  \   'php' : ['->', '::'],
+  \   'cs,java,javascript,typescript,d,python,perl6,scala,vb,elixir,go' : ['.'],
+  \   'ruby' : ['.', '::'],
+  \   'lua' : ['.', ':'],
+  \   'erlang' : [':'],
+  \ }
