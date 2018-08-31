@@ -41,7 +41,7 @@ Plug 'othree/javascript-libraries-syntax.vim'
 " php plug
 Plug 'StanAngeloff/php.vim'
 " YouCompleteMe
-Plug 'Valloric/YouCompleteMe'
+" Plug 'Valloric/YouCompleteMe'
 " Auto Pair
 Plug 'jiangmiao/auto-pairs'
 Plug 'nelsyeung/twig.vim'
@@ -124,9 +124,14 @@ nnoremap <leader>- :sp<CR>
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 
+" Emmet
+let g:user_emmet_expandabbr_key='<Tab>'
+imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+
 " NERDTree Settings
-map <silent> <C-n> :NERDTreeToggle<cr>
+map <silent> <C-\> :NERDTreeToggle<cr>
 set background=dark
+let NERDTreeQuitOnOpen=1
 
 " Airline Settings
 let g:airline#extensions#tabline#enabled=1
@@ -181,7 +186,7 @@ let g:syntastic_check_on_wq = 0
 " Vim multiple cursors
 " Multiple cursors
 let g:multi_cursor_start_key='<F5>'
-let g:multi_cursor_next_key='<C-d>'
+let g:multi_cursor_next_key='<C-n>'
 let g:multi_cursor_prev_key='<C-p>'
 let g:multi_cursor_skip_key='<C-k>'
 let g:multi_cursor_quit_key='<Esc>'
@@ -210,16 +215,16 @@ if (has("nvim") && !empty($TMUX))
   set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 endif
 
-let g:ycm_semantic_triggers =  {
-  \   'c' : ['->', '.', ' ', '(', '[', '&'],
-  \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
-  \             're!\[.*\]\s'],
-  \   'ocaml' : ['.', '#'],
-  \   'cpp,objcpp' : ['->', '.', '::'],
-  \   'perl' : ['->'],
-  \   'php' : ['->', '::'],
-  \   'cs,java,javascript,typescript,d,python,perl6,scala,vb,elixir,go' : ['.'],
-  \   'ruby' : ['.', '::'],
-  \   'lua' : ['.', ':'],
-  \   'erlang' : [':'],
-  \ }
+" let g:ycm_semantic_triggers =  {
+  " \   'c' : ['->', '.', ' ', '(', '[', '&'],
+  " \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
+  " \             're!\[.*\]\s'],
+  " \   'ocaml' : ['.', '#'],
+  " \   'cpp,objcpp' : ['->', '.', '::'],
+  " \   'perl' : ['->'],
+  " \   'php' : ['->', '::'],
+  " " \   'cs,java,javascript,typescript,d,python,perl6,scala,vb,elixir,go' : ['.'],
+  " \   'ruby' : ['.', '::'],
+  " \   'lua' : ['.', ':'],
+  " \   'erlang' : [':'],
+  " \ }
