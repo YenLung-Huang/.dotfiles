@@ -1,8 +1,6 @@
 " Pluging Start
 call plug#begin('~/.vim/plugged')
 
-Plug 'VundleVim/Vundle.vim'
-
 Plug 'tpope/vim-fugitive'
 " Plug 'git://git.wincent.com/command-t.git'
 Plug 'scrooloose/nerdtree'
@@ -15,12 +13,13 @@ Plug 'joshdick/onedark.vim'
 " Vim Emmet
 Plug 'mattn/emmet-vim'
 " Syntastic
-Plug 'vim-syntastic/syntastic'
+Plug 'editorconfig/editorconfig-vim'
+" Plug 'vim-syntastic/syntastic'
 " Javascript-libraries-sytax.vim
 Plug 'othree/javascript-libraries-syntax.vim'
 " Surrond vim
 Plug 'tpope/vim-surround'
-
+" Nerdtree
 Plug 'scrooloose/nerdcommenter'
 " Vim signature mark improvement
 Plug 'kshenoy/vim-signature'
@@ -32,8 +31,6 @@ Plug 'junegunn/vim-easy-align'
 Plug 'kana/vim-textobj-user'
 " Textobj entire buffer
 Plug 'kana/vim-textobj-entire'
-" Easy Align
-Plug 'junegunn/vim-easy-align'
 " Multiyple cursors
 Plug 'terryma/vim-multiple-cursors'
 " javascript-libraries-syntax
@@ -42,9 +39,11 @@ Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'StanAngeloff/php.vim'
 " YouCompleteMe
 " Plug 'Valloric/YouCompleteMe'
+Plug 'w0rp/ale'
 " Auto Pair
 Plug 'jiangmiao/auto-pairs'
 Plug 'nelsyeung/twig.vim'
+Plug 'jwalton512/vim-blade'
 " Initialize plugin system
 call plug#end()
 
@@ -61,7 +60,6 @@ map <silent> <C-C> <Esc>
 " nohlsearch shortcut
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
-inoremap <C-c> <Esc>
 " don't make vim compatible with vi
 set nocompatible
 
@@ -125,8 +123,8 @@ source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 
 " Emmet
-let g:user_emmet_expandabbr_key='<Tab>'
-imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
+" let g:user_emmet_expandabbr_key='<Tab>'
+" imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 " NERDTree Settings
 map <silent> <C-\> :NERDTreeToggle<cr>
@@ -178,10 +176,6 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
 
 " Vim multiple cursors
 " Multiple cursors
@@ -214,7 +208,6 @@ colorscheme onedark
 if (has("nvim") && !empty($TMUX))
   set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
 endif
-
 " let g:ycm_semantic_triggers =  {
   " \   'c' : ['->', '.', ' ', '(', '[', '&'],
   " \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
