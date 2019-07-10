@@ -1,6 +1,5 @@
 " Pluging Start
 call plug#begin('~/.vim/plugged')
-
 Plug 'tpope/vim-fugitive'
 " Plug 'git://git.wincent.com/command-t.git'
 Plug 'scrooloose/nerdtree'
@@ -66,6 +65,7 @@ set nocompatible
 set path+=**
 " Syntax highlighting
 syntax on
+set ff=unix
 " Line numbers
 set number nu
 " Relative numbers
