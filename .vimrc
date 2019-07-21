@@ -6,16 +6,14 @@ Plug 'scrooloose/nerdtree'
 " Airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 " OneDark Theme
 Plug 'joshdick/onedark.vim'
+Plug 'arcticicestudio/nord-vim'
 " Vim Emmet
 Plug 'mattn/emmet-vim'
 " Syntastic
 Plug 'editorconfig/editorconfig-vim'
 " Plug 'vim-syntastic/syntastic'
-" Javascript-libraries-sytax.vim
-Plug 'othree/javascript-libraries-syntax.vim'
 " Surrond vim
 Plug 'tpope/vim-surround'
 " Nerdtree
@@ -46,10 +44,20 @@ Plug 'jwalton512/vim-blade'
 " Initialize plugin system
 call plug#end()
 
-nnoremap <Up> :echomsg "use k"<cr>
-nnoremap <Down> :echomsg "use j"<cr>
-nnoremap <Left> :echomsg "use h"<cr>
-nnoremap <Right> :echomsg "use l"<cr>
+syntax on
+set nocompatible
+set path+=**
+set ff=unix
+set clipboard=unnamed
+set number nu
+set relativenumber
+set cursorline
+set autoindent
+set smartindent
+set autoread
+set wildmenu
+set showcmd
+
 " buffer short cut
 nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
@@ -58,39 +66,11 @@ nnoremap <silent> ]B :blast<CR>
 map <silent> <C-C> <Esc>
 " nohlsearch shortcut
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
-
-" don't make vim compatible with vi
-set nocompatible
-
-set path+=**
-" Syntax highlighting
-syntax on
-set ff=unix
-" Line numbers
-set number nu
-" Relative numbers
-set relativenumber
-" Color the cursorline
-set cursorline
-" Auto indenting
-set autoindent
-" Smart indenting
-set smartindent
-" reload files changed outside vim
-set autoread
-" Wild menu
-set wildmenu
-" View cmd
-set showcmd
 " our <leader> will be the space key
 let mapleader=" "
 " our <localleader> will be the '-' key
 let maplocalleader="-"
 
-"  Font
-if has('gui_running')
-  set guifont=Hack:h12
-endif
 " Some basic PSR code style rules
 " ts = tabstop; sts = softtabstop; sw = shiftwidth
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
@@ -122,20 +102,16 @@ nnoremap <leader>- :sp<CR>
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 
-" Emmet
-" let g:user_emmet_expandabbr_key='<Tab>'
-" imap <expr> <tab> emmet#expandAbbrIntelligent("\<tab>")
 
 " NERDTree Settings
 map <silent> <C-\> :NERDTreeToggle<cr>
-set background=dark
 let NERDTreeQuitOnOpen=1
 
 " Airline Settings
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep ='|'
-let g:airline_theme='onedark'
+let g:airline_theme='nord'
 let g:airline_powerline_fonts = 1
 
 " nerdCommenter Settings"
@@ -157,7 +133,7 @@ let g:ctrlp_match_window_reversed=0
 let g:ctrlp_mruf_max=500
 let g:ctrlp_follow_symlinks=1
 
-colorscheme onedark
+colorscheme nord
 " Automatically removing all trailing whitespace
 autocmd BufWritePre * %s/\s\+$//e
 
@@ -168,8 +144,8 @@ set guioptions-=L  "remove left-hand scroll bar
 " Vim-easy-align settings
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 vmap <Leader>a <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap <Leader>a <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
 
 " Syntastic
 set statusline+=%#warningmsg#
@@ -193,21 +169,8 @@ let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String']
 let g:onedark_terminal_italics  = 1
 
 "...
-colorscheme onedark
-
-" if has("gui_running")
-        " highlight Cursor guifg=black guibg=white
-        " highlight iCursor guifg=black guibg=white
-        " set guicursor=n-v-c:block-Cursor
-        " set guicursor+=i:ver100-iCursor
-        " set guicursor+=n-v-c:blinkon0
-        " set guicursor+=i:blinkwait1
-" endif
 
 "Force cursor styling in nvim+tmux per <https://github.com/neovim/neovim/wiki/Following-HEAD#20170402>
-if (has("nvim") && !empty($TMUX))
-  set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
-endif
 " let g:ycm_semantic_triggers =  {
   " \   'c' : ['->', '.', ' ', '(', '[', '&'],
   " \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
