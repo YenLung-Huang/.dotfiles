@@ -1,42 +1,11 @@
-" Pluging Start
-call plug#begin('~/.vim/plugged')
-Plug 'tpope/vim-fugitive'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'arnaud-lb/vim-php-namespace'
-Plug 'scrooloose/nerdtree'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'arcticicestudio/nord-vim'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'mattn/emmet-vim'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'tpope/vim-surround'
-Plug 'scrooloose/nerdcommenter'
-Plug 'kshenoy/vim-signature'
-" Ctrlp fuzzy search
-Plug 'ctrlpvim/ctrlp.vim'
-" Vim-easy-align
-Plug 'junegunn/vim-easy-align'
-" Textobj implements
-Plug 'kana/vim-textobj-user'
-" Textobj entire buffer
-Plug 'kana/vim-textobj-entire'
-" Multiyple cursors
-Plug 'terryma/vim-multiple-cursors'
-" javascript-libraries-syntax
-Plug 'othree/javascript-libraries-syntax.vim'
-" php plug
-Plug 'StanAngeloff/php.vim'
-" YouCompleteMe
-" Plug 'Valloric/YouCompleteMe'
-Plug 'w0rp/ale'
-" Auto Pair
-Plug 'jiangmiao/auto-pairs'
-Plug 'nelsyeung/twig.vim'
-Plug 'jwalton512/vim-blade'
-" Initialize plugin system
-call plug#end()
+"==============================================================================
+" 自用的 vim 配置文件。:
+" widows/linux 下的 Gvim8;
+" macOS 下的 macvim 和 vim8
+"
+" Author:       Mark Huang <https://github.com/YenLung-Huang>
+" Licence:      MIT
+"==============================================================================
 
 syntax on
 set nocompatible
@@ -51,11 +20,6 @@ set autoread
 set wildmenu
 set showcmd
 
-" buffer short cut
-nnoremap <silent> [b :bprevious<CR>
-nnoremap <silent> ]b :bnext<CR>
-nnoremap <silent> [B :bfirst<CR>
-nnoremap <silent> ]B :blast<CR>
 map <silent> <C-C> <Esc>
 " nohlsearch shortcut
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
@@ -63,6 +27,10 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 let mapleader=" "
 " our <localleader> will be the '-' key
 let maplocalleader="-"
+"
+" Split windows fast
+nnoremap <leader>\ :vs<CR>
+nnoremap <leader>- :sp<CR>
 
 " Some basic PSR code style rules
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
@@ -86,27 +54,77 @@ set incsearch           " search as characters are entered
 set hlsearch            " highlight matches
 set encoding=utf-8  " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
+if has("gui_running")
+        set renderoptions=type:directx
+        set guifont=Fira\ Code:h14
+        set guioptions-=m  "remove menu bar
+        set guioptions-=T  "remove toolbar
+        set guioptions-=r  "remove right-hand scroll bar
+        set guioptions-=L  "remove left-hand scroll bar
+endif
 
-"
-" Split windows fast
-nnoremap <leader>\ :vs<CR>
-nnoremap <leader>- :sp<CR>
+"==============================================================================
+"========================== Third plugins
+"==============================================================================
+
+call plug#begin('~/.vim/plugged')
+" Enhanced plugins
+Plug 'mhinz/vim-startify'
+Plug 'scrooloose/nerdcommenter'
+Plug 'vim-airline/vim-airline'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'jiangmiao/auto-pairs'
+" Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-easy-align'
+Plug 'arcticicestudio/nord-vim'
+Plug 'scrooloose/nerdtree'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-fugitive'
+Plug 'kshenoy/vim-signature'
+Plug 'mattn/emmet-vim'
+
+Plug 'dense-analysis/ale'
+
+" Php plugins
+Plug 'phpactor/phpactor', {'for': 'php', 'do': 'composer install'}
+Plug 'shawncplus/phpcomplete.vim'
+Plug 'arnaud-lb/vim-php-namespace'
+Plug 'jwalton512/vim-blade'
+Plug 'nelsyeung/twig.vim'
+Plug 'StanAngeloff/php.vim' " syntax enhanced
+" Initialize plugin system
+call plug#end()
+
+
+"==============================================================================
+"=============================== Plugin Setting
+"==============================================================================
+
 " Windows Gvim need to reload menu with UTF-8 encoding
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
-
+" source $VIMRUNTIME/delmenu.vim
+" source $VIMRUNTIME/menu.vim
 
 " NERDTree Settings
 map <silent> <C-\> :NERDTreeToggle<cr>
 let NERDTreeQuitOnOpen=1
 
-let g:airline#extensions#ale#enabled = 1
 " Airline Settings
+let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep ='|'
+let g:airline#extensions#tabline#formatter = 'default'
 let g:airline_theme='nord'
-let g:airline_powerline_fonts = 1
+
+" Ale
+let g:ale_linters = {'php': ['php', 'langserver', 'phan']}
+" let g:ale_php_langserver_executable = expand('~/.config/composer/vendor/bin/php-language-server.php')
+let g:ale_php_langserver_executable = expand('C:/Users/Yellow/AppData/Roaming/Composer/vendor/bin/php-language-server.php')
+let g:ale_php_phan_use_client = 1
 
 " nerdCommenter Settings"
 let g:NERDSpaceDelims=1
@@ -127,7 +145,6 @@ let g:ctrlp_match_window_reversed=0
 let g:ctrlp_mruf_max=500
 let g:ctrlp_follow_symlinks=1
 
-colorscheme nord
 " Automatically removing all trailing whitespace
 autocmd BufWritePre * %s/\s\+$//e
 
@@ -150,49 +167,59 @@ if !exists('g:easy_align_delimiters')
 endif
 
 let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String'] }
-let g:onedark_terminal_italics  = 1
 
-if has("gui_running")
-        set renderoptions=type:directx
-        set guifont=Fira\ Code:h14
-        set guioptions-=m  "remove menu bar
-        set guioptions-=T  "remove toolbar
-        set guioptions-=r  "remove right-hand scroll bar
-        set guioptions-=L  "remove left-hand scroll bar
-endif
 
-" gutentags搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归 "
-let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
+function! IPhpInsertUse()
+    call PhpInsertUse()
+    call feedkeys('a',  'n')
+endfunction
+autocmd FileType php inoremap <Leader>u <Esc>:call IPhpInsertUse()<CR>
+autocmd FileType php noremap <Leader>u :call PhpInsertUse()<CR>
 
-" 所生成的数据文件的名称 "
-let g:gutentags_ctags_tagfile = '.tags'
+function! IPhpExpandClass()
+    call PhpExpandClass()
+    call feedkeys('a', 'n')
+endfunction
+autocmd FileType php inoremap <Leader>e <Esc>:call IPhpExpandClass()<CR>
+autocmd FileType php noremap <Leader>e :call PhpExpandClass()<CR>
 
-" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录 "
-let s:vim_tags = expand('~/.cache/tags')
-let g:gutentags_cache_dir = s:vim_tags
-" 检测 ~/.cache/tags 不存在就新建 "
-if !isdirectory(s:vim_tags)
-   silent! call mkdir(s:vim_tags, 'p')
-endif
 
-"...
+" ctags
+function! UpdateTags()
+  let tags = 'tags'
 
-"Force cursor styling in nvim+tmux per <https://github.com/neovim/neovim/wiki/Following-HEAD#20170402>
-" let g:ycm_semantic_triggers =  {
-  " \   'c' : ['->', '.', ' ', '(', '[', '&'],
-  " \   'objc' : ['->', '.', 're!\[[_a-zA-Z]+\w*\s', 're!^\s*[^\W\d]\w*\s',
-  " \             're!\[.*\]\s'],
-  " \   'ocaml' : ['.', '#'],
-  " \   'cpp,objcpp' : ['->', '.', '::'],
-  " \   'perl' : ['->'],
-  " \   'php' : ['->', '::'],
-  " " \   'cs,java,javascript,typescript,d,python,perl6,scala,vb,elixir,go' : ['.'],
-  " \   'ruby' : ['.', '::'],
-  " \   'lua' : ['.', ':'],
-  " \   'erlang' : [':'],
+  if filereadable(tags)
+    let file = substitute(expand('%:p'), getcwd() . '/', '', '')
+
+    " remove tags of file
+    call system('sed -ri "/\s+' . escape(file, './') . '/d"' . tags)
+
+    " append tags of file
+    call system('ctags -a "' . file . '"')
+  endif
+endfunction
+
+autocmd BufWritePost *.php call UpdateTags()
+command! Ctags call system('ctags --recurse --exclude=vendor --exclude=node_modules --exclude=public --exclude="*.json" --exclude="*.min.*" && ctags --recurse -f tags.vendor vendor node_modules &')
+
 " ultisnips
 let g:UltiSnipsExpandTrigger = '<TAB>'
 " let g:UltiSnipsListSnippets = '<Leader><TAB>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
 
+" Php syntax enhanced
+" Put this function at the very end of your vimrc file.
+function! PhpSyntaxOverride()
+  " Put snippet overrides in this function.
+  hi! link phpDocTags phpDefine
+  hi! link phpDocParam phpType
+endfunction
+
+augroup phpSyntaxOverride
+  autocmd!
+  autocmd FileType php call PhpSyntaxOverride()
+augroup END
+
+color nord
+set background=dark
