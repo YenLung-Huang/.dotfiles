@@ -1,24 +1,18 @@
 " Pluging Start
 call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-fugitive'
-" Plug 'git://git.wincent.com/command-t.git'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'arnaud-lb/vim-php-namespace'
 Plug 'scrooloose/nerdtree'
-" Airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" OneDark Theme
-Plug 'joshdick/onedark.vim'
 Plug 'arcticicestudio/nord-vim'
-" Vim Emmet
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'mattn/emmet-vim'
-" Syntastic
 Plug 'editorconfig/editorconfig-vim'
-" Plug 'vim-syntastic/syntastic'
-" Surrond vim
 Plug 'tpope/vim-surround'
-" Nerdtree
 Plug 'scrooloose/nerdcommenter'
-" Vim signature mark improvement
 Plug 'kshenoy/vim-signature'
 " Ctrlp fuzzy search
 Plug 'ctrlpvim/ctrlp.vim'
@@ -47,7 +41,6 @@ call plug#end()
 syntax on
 set nocompatible
 set path+=**
-set ff=unix
 set clipboard=unnamed
 set number nu
 set relativenumber
@@ -72,7 +65,6 @@ let mapleader=" "
 let maplocalleader="-"
 
 " Some basic PSR code style rules
-" ts = tabstop; sts = softtabstop; sw = shiftwidth
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
 autocmd Filetype scss setlocal ts=2 sts=2 sw=2
 autocmd Filetype vue setlocal ts=2 sts=2 sw=2
@@ -94,6 +86,7 @@ set incsearch           " search as characters are entered
 set hlsearch            " highlight matches
 set encoding=utf-8  " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
+
 "
 " Split windows fast
 nnoremap <leader>\ :vs<CR>
@@ -107,6 +100,7 @@ source $VIMRUNTIME/menu.vim
 map <silent> <C-\> :NERDTreeToggle<cr>
 let NERDTreeQuitOnOpen=1
 
+let g:airline#extensions#ale#enabled = 1
 " Airline Settings
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
@@ -137,21 +131,11 @@ colorscheme nord
 " Automatically removing all trailing whitespace
 autocmd BufWritePre * %s/\s\+$//e
 
-set guioptions-=m  "remove menu bar
-set guioptions-=T  "remove toolbar
-set guioptions-=r  "remove right-hand scroll bar
-set guioptions-=L  "remove left-hand scroll bar
 " Vim-easy-align settings
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 vmap <Leader>a <Plug>(EasyAlign)
 nmap <Leader>a <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
-
-" Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
 
 " Vim multiple cursors
 " Multiple cursors
@@ -168,6 +152,29 @@ endif
 let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String'] }
 let g:onedark_terminal_italics  = 1
 
+if has("gui_running")
+        set renderoptions=type:directx
+        set guifont=Fira\ Code:h14
+        set guioptions-=m  "remove menu bar
+        set guioptions-=T  "remove toolbar
+        set guioptions-=r  "remove right-hand scroll bar
+        set guioptions-=L  "remove left-hand scroll bar
+endif
+
+" gutentags搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归 "
+let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
+
+" 所生成的数据文件的名称 "
+let g:gutentags_ctags_tagfile = '.tags'
+
+" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录 "
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+" 检测 ~/.cache/tags 不存在就新建 "
+if !isdirectory(s:vim_tags)
+   silent! call mkdir(s:vim_tags, 'p')
+endif
+
 "...
 
 "Force cursor styling in nvim+tmux per <https://github.com/neovim/neovim/wiki/Following-HEAD#20170402>
@@ -183,4 +190,9 @@ let g:onedark_terminal_italics  = 1
   " \   'ruby' : ['.', '::'],
   " \   'lua' : ['.', ':'],
   " \   'erlang' : [':'],
-  " \ }
+" ultisnips
+let g:UltiSnipsExpandTrigger = '<TAB>'
+" let g:UltiSnipsListSnippets = '<Leader><TAB>'
+let g:UltiSnipsJumpForwardTrigger = '<C-J>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
+
