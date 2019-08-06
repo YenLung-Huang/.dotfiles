@@ -75,7 +75,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'jiangmiao/auto-pairs'
-" Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
@@ -84,6 +83,7 @@ Plug 'scrooloose/nerdtree'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-unimpaired'
 Plug 'kshenoy/vim-signature'
 Plug 'mattn/emmet-vim'
 
@@ -121,16 +121,19 @@ let g:airline#extensions#tabline#formatter = 'default'
 let g:airline_theme='nord'
 
 " Ale
-let g:ale_linters = {'php': ['php', 'langserver', 'phan']}
-" let g:ale_php_langserver_executable = expand('~/.config/composer/vendor/bin/php-language-server.php')
-let g:ale_php_phan_use_client = 1
+let b:ale_linters = ['phpcs', 'php']
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'php': ['php_cs_fixer'],
+\}
+let g:ale_fix_on_save = 1
 
 " nerdCommenter Settings"
 let g:NERDSpaceDelims=1
 let g:NERDCustomDelimiters = { 'php': { 'left': '//'}, 'html': { 'left': '<!--', 'right': '-->'}}
 
 " Automatically removing all trailing whitespace
-autocmd BufWritePre * %s/\s\+$//e
+" autocmd BufWritePre * %s/\s\+$//e
 
 " Vim-easy-align settings
 " Start interactive EasyAlign in visual mode (e.g. vipga)
