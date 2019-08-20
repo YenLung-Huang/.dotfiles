@@ -54,6 +54,7 @@ set incsearch           " search as characters are entered
 set hlsearch            " highlight matches
 set encoding=utf-8  " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
+set tags=tags,tags.vendor
 if has("gui_running")
         set renderoptions=type:directx
         set guifont=Fira\ Code:h14
