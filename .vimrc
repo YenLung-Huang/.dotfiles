@@ -20,6 +20,13 @@ set autoread
 set wildmenu
 set showcmd
 
+" folding
+set foldmethod=syntax
+set foldenable " 預設全部關閉
+let php_folding = 1 " php 預設
+set foldnestmax=3
+set foldcolumn=1
+
 map <silent> <C-C> <Esc>
 " nohlsearch shortcut
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
@@ -56,7 +63,7 @@ set encoding=utf-8  " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
 if has("gui_running")
         set renderoptions=type:directx
-        set guifont=Fira\ Code:h14
+        set guifont=Fira\ Code\ Retina:h14
         set guioptions-=m  "remove menu bar
         set guioptions-=T  "remove toolbar
         set guioptions-=r  "remove right-hand scroll bar
@@ -135,7 +142,7 @@ let g:NERDSpaceDelims=1
 let g:NERDCustomDelimiters = { 'php': { 'left': '//'}, 'html': { 'left': '<!--', 'right': '-->'}}
 
 " fzf
-nnoremap <silent> <Leader>f :Files<CR>
+nnoremap <silent> <Leader>p :Files<CR>
 nnoremap <silent> <Leader>b :Buffers<CR>
 " the silverseacher
 command! -bang -nargs=* Ag
