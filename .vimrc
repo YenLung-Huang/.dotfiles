@@ -19,13 +19,19 @@ set smartindent
 set autoread
 set wildmenu
 set showcmd
+set lazyredraw
 
 " folding
 set foldmethod=syntax
 set foldenable " 預設全部關閉
-let php_folding = 1 " php 預設
 set foldnestmax=3
 set foldcolumn=1
+set foldlevel=1
+
+" php
+let php_folding = 1 " php 預設
+" fix switch statements error"
+let g:PHP_vintage_case_default_indent = 1
 
 map <silent> <C-C> <Esc>
 " nohlsearch shortcut
@@ -77,7 +83,6 @@ endif
 
 call plug#begin('~/.vim/plugged')
 " Enhanced plugins
-Plug 'mhinz/vim-startify'
 Plug 'scrooloose/nerdcommenter'
 Plug 'vim-airline/vim-airline'
 Plug 'SirVer/ultisnips'
@@ -94,6 +99,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
 Plug 'kshenoy/vim-signature'
 Plug 'mattn/emmet-vim'
+Plug 'Konfekt/FastFold'
 
 Plug 'dense-analysis/ale'
 
@@ -103,7 +109,7 @@ Plug 'shawncplus/phpcomplete.vim'
 Plug 'arnaud-lb/vim-php-namespace'
 Plug 'jwalton512/vim-blade'
 Plug 'nelsyeung/twig.vim'
-Plug 'StanAngeloff/php.vim' " syntax enhanced
+Plug '2072/PHP-Indenting-for-VIm'
 " Initialize plugin system
 call plug#end()
 
@@ -176,6 +182,10 @@ endif
 
 let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String'] }
 
+" vim-php-namespace
+let g:php_namespace_sort_after_insert = 1
+" autocmd FileType php inoremap <Leader>s <Esc>:call PhpSortUse()<CR>
+autocmd FileType php noremap <Leader>s :call PhpSortUse()<CR>
 
 function! IPhpInsertUse()
     call PhpInsertUse()
@@ -190,7 +200,6 @@ function! IPhpExpandClass()
 endfunction
 " autocmd FileType php inoremap <Leader>e <Esc>:call IPhpExpandClass()<CR>
 autocmd FileType php noremap <Leader>e :call PhpExpandClass()<CR>
-
 
 " ctags
 function! UpdateTags()
@@ -215,19 +224,6 @@ let g:UltiSnipsExpandTrigger = '<TAB>'
 " let g:UltiSnipsListSnippets = '<Leader><TAB>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
-
-" Php syntax enhanced
-" Put this function at the very end of your vimrc file.
-function! PhpSyntaxOverride()
-  " Put snippet overrides in this function.
-  hi! link phpDocTags phpDefine
-  hi! link phpDocParam phpType
-endfunction
-
-augroup phpSyntaxOverride
-  autocmd!
-  autocmd FileType php call PhpSyntaxOverride()
-augroup END
 
 color nord
 set background=dark
