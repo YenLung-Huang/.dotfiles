@@ -8,8 +8,12 @@
 "==============================================================================
 
 syntax on
+set synmaxcol=128
+syntax sync minlines=256
+" set pastetoggle=<F12>
 set nocompatible
 set path+=**
+" 讓os跟vim的clipboard 共用
 set clipboard=unnamed
 set number nu
 set relativenumber
@@ -25,7 +29,7 @@ set lazyredraw
 set foldmethod=syntax
 set foldenable " 預設全部關閉
 set foldnestmax=3
-set foldcolumn=1
+" set foldcolumn=1
 set foldlevel=1
 
 " php
@@ -34,6 +38,7 @@ let php_folding = 1 " php 預設
 let g:PHP_vintage_case_default_indent = 1
 
 map <silent> <C-C> <Esc>
+inoremap <silent> <C-C> <Esc>
 " nohlsearch shortcut
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 " our <leader> will be the space key
@@ -57,8 +62,8 @@ autocmd Filetype twig setlocal ts=4 sts=4 sw=4
 set scrolloff=3
 " Use spaces instead to tabs
 set expandtab
-" No wrap
-set nowrap
+" Set wrap
+set wrap
 " Ignore case when searching
 set ignorecase
 " When searching try to be smart about cases
@@ -100,8 +105,12 @@ Plug 'tpope/vim-unimpaired'
 Plug 'kshenoy/vim-signature'
 Plug 'mattn/emmet-vim'
 Plug 'Konfekt/FastFold'
+Plug 'ryanoasis/vim-devicons'
 
 Plug 'dense-analysis/ale'
+
+" js plugins
+Plug 'posva/vim-vue'
 
 " Php plugins
 Plug 'phpactor/phpactor', {'for': 'php', 'do': 'composer install'}
@@ -152,12 +161,20 @@ let g:NERDCustomDelimiters = { 'php': { 'left': '//'}, 'html': { 'left': '<!--',
 nnoremap <silent> <Leader>p :Files<CR>
 nnoremap <silent> <Leader>b :Buffers<CR>
 " the silverseacher
-command! -bang -nargs=* Ag
-  \ call fzf#vim#ag(<q-args>,
-  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-  \                 <bang>0)
-nnoremap <silent> <Leader>A :Ag<CR>
+" command! -bang -nargs=* Ag
+  " \ call fzf#vim#ag(<q-args>,
+  " \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  " \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  " \                 <bang>0)
+" nnoremap <silent> <Leader>A :Ag<CR>
+
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
+  \   <bang>0)
+nnoremap <silent> <Leader>R :Rg<CR>
 
 " Automatically removing all trailing whitespace
 " autocmd BufWritePre * %s/\s\+$//e
@@ -215,6 +232,21 @@ function! UpdateTags()
     call system('ctags -a "' . file . '"')
   endif
 endfunction
+
+" Fixed vim pasting
+" Because Vim doesn't like
+" pasting that works.
+let &t_SI .= "\<Esc>[?2004h"
+let &t_EI .= "\<Esc>[?2004l"
+
+inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
+
+function! XTermPasteBegin()
+    set pastetoggle=<Esc>[201~
+    set paste
+    return ""
+endfunction
+" end fixed
 
 autocmd BufWritePost *.php call UpdateTags()
 command! Ctags call system('ctags --recurse --exclude=vendor --exclude=node_modules --exclude=public --exclude="*.json" --exclude="*.min.*" && ctags --recurse -f tags.vendor vendor node_modules &')
