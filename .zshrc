@@ -9,9 +9,13 @@ export ZSH="/Users/mark/.oh-my-zsh"
 # --follow: Follow symlinks
 # --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
 # export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*"'
+export FZF_DEFAULT_COMMAND="rg --files --no-ignore --hidden --follow --glob '!.git/*'"
 export EDITOR="nvim"
+# composer bin
 export PATH=~/.composer/vendor/bin:$PATH
+
+# rabbitmq
+export PATH=$PATH:/usr/local/opt/rabbitmq/sbin
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -89,6 +93,9 @@ prompt pure
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
+
+export LANG="zh_TW.UTF-8"
+export LC_ALL="zh_TW.UTF-8"
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
