@@ -19,6 +19,7 @@ set clipboard=unnamed
 set number nu
 set relativenumber
 set cursorline
+set cursorcolumn
 set autoindent
 set smartindent
 set autoread
@@ -38,7 +39,7 @@ set nowritebackup
 set cmdheight=2
 
 " You will have bad experience for diagnostic messages when it's default 4000.
-set updatetime=300
+set updatetime=100
 
 " don't give |ins-completion-menu| messages.
 set shortmess+=c
@@ -81,6 +82,7 @@ autocmd Filetype php setlocal ts=4 sts=4 sw=4
 autocmd Filetype twig setlocal ts=4 sts=4 sw=4
 
 set scrolloff=3
+set sidescrolloff=5
 " Use spaces instead to tabs
 set expandtab
 " Set wrap
@@ -110,6 +112,9 @@ endif
 call plug#begin('~/.vim/plugged')
 " Enhanced plugins
 Plug 'scrooloose/nerdcommenter'
+Plug 'preservim/nerdtree'
+Plug 'airblade/vim-gitgutter'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'vim-airline/vim-airline'
 " Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
@@ -118,13 +123,11 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'arcticicestudio/nord-vim'
-" Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
 Plug 'kshenoy/vim-signature'
 " Plug 'mattn/emmet-vim'
-Plug 'Konfekt/FastFold'
 Plug 'ryanoasis/vim-devicons'
 
 " Plug 'dense-analysis/ale'
@@ -132,32 +135,26 @@ Plug 'editorconfig/editorconfig-vim'
 
 " Use release branch (Recommend)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'neoclide/coc-json', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-pairs', {'do': 'yarn install --frozen-lockfile'}
-Plug 'neoclide/coc-git', {'do': 'yarn install --frozen-lockfile'}
+Plug 'ap/vim-css-color'
+" Plug 'neoclide/coc-json'
+" Plug 'neoclide/coc-tsserver'
+" Plug 'neoclide/coc-pairs'
+" Plug 'neoclide/coc-git'
 " Plug 'neoclide/coc-explorer'
 " Plug 'neoclide/coc-snippets', {'do': 'yarn install --frozen-lockfile'}
 " Plug 'neoclide/coc-eslint', {'do': 'yarn install --frozen-lockfile'}
 " Plug 'neoclide/coc-tslint', {'do': 'yarn install --frozen-lockfile'}
 " Plug 'neoclide/coc-css', {'do': 'yarn install --frozen-lockfile'}
 " Plug 'neoclide/coc-lists', {'do': 'yarn install --frozen-lockfile'} " mru and stuff
-Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'} " color highlighting
-Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
+" Plug 'neoclide/coc-highlight', {'do': 'yarn install --frozen-lockfile'} " color highlighting
+" Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 " Need to manually run :CocInstall coc-phpls
 " Plug 'marlonfan/coc-phpls', {'do': 'yarn install --frozen-lockfile'}
-
+Plug 'sheerun/vim-polyglot'
 
 " js plugins
 Plug 'posva/vim-vue'
 
-" Php plugins
-Plug 'phpactor/phpactor', {'for': 'php', 'do': 'composer install'}
-Plug 'shawncplus/phpcomplete.vim'
-Plug 'arnaud-lb/vim-php-namespace'
-Plug 'jwalton512/vim-blade'
-Plug 'nelsyeung/twig.vim'
-Plug '2072/PHP-Indenting-for-VIm'
 " Initialize plugin system
 call plug#end()
 
@@ -166,8 +163,18 @@ call plug#end()
 "=============================== Plugin Setting
 "==============================================================================
 
+" Git gutter
+function! GitStatus()
+  let [a,m,r] = GitGutterGetHunkSummary()
+  return printf('+%d ~%d -%d', a, m, r)
+endfunction
+set statusline+=%{GitStatus()}
 " coc-explorer
-nmap <silent> <C-\> :CocCommand explorer<CR>
+" nmap <silent> <C-\> :CocCommand explorer<CR>
+" nerdtree
+nmap <silent> <C-\> :NERDTreeToggle<CR>
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
 " Windows Gvim need to reload menu with UTF-8 encoding
 " source $VIMRUNTIME/delmenu.vim
 " source $VIMRUNTIME/menu.vim
@@ -175,6 +182,8 @@ nmap <silent> <C-\> :CocCommand explorer<CR>
 " NERDTree Settings
 " map <silent> <C-\> :NERDTreeToggle<cr>
 let NERDTreeQuitOnOpen=1
+let NERDTreeMapActivateNode='l'
+let NERDTreeMapCloseDir='h'
 
 " Airline Settings
 let g:airline#extensions#ale#enabled = 1
@@ -211,7 +220,7 @@ nnoremap <silent> <Leader>b :Buffers<CR>
 
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
-  \   'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   "rg --column --line-number --hidden -g '!.git' --ignore-case --no-heading --color=always ".shellescape(<q-args>), 1,
   \   <bang>0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
   \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'right:50%:hidden', '?'),
   \   <bang>0)
@@ -324,6 +333,9 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+
+" show chunk diff at current position
+nmap gs <Plug>(coc-git-chunkinfo)
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>

@@ -12,8 +12,10 @@ export ZSH="/Users/mark/.oh-my-zsh"
 export FZF_DEFAULT_COMMAND="rg --files --no-ignore --hidden --follow --glob '!.git/*'"
 export EDITOR="nvim"
 # composer bin
-export PATH=~/.composer/vendor/bin:$PATH
+# export PATH=~/.composer/vendor/bin:$PATH
+alias "composer"="php ~/projects/composer.phar"
 
+# alias "php"="/usr/local/Cellar/php/7.4.5/bin/php"
 # rabbitmq
 export PATH=$PATH:/usr/local/opt/rabbitmq/sbin
 
