@@ -180,6 +180,7 @@ set mouse-wheel-cursor		= no		# Prefer moving the cursor to scrolling the view?
 
 bind main	C	?git cherry-pick %(commit)
 bind status	C	!git commit
+bind status	+	!git commit
 bind stash	A	?git stash apply %(stash)
 bind stash	P	?git stash pop %(stash)
 bind stash	!	?git stash drop %(stash)
@@ -230,6 +231,7 @@ bind generic	<C-C>	quit			# Close all views and quit
 bind status	u	status-update		# Stage/unstage changes in file
 bind status	!	status-revert		# Revert changes in file
 bind status	M	status-merge		# Open git-mergetool(1)
+bind status     D       !@?rm %(file)           # Delete files in status view
 #bind status	???	:toggle status		# Show short or long status labels
 bind stage	u	status-update		# Stage/unstage current diff (c)hunk
 bind stage	1	stage-update-line	# Stage/unstage current line

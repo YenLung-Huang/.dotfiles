@@ -13,9 +13,13 @@ export FZF_DEFAULT_COMMAND="rg --files --no-ignore --hidden --follow --glob '!.g
 export EDITOR="nvim"
 # composer bin
 # export PATH=~/.composer/vendor/bin:$PATH
-alias "composer"="php ~/projects/composer.phar"
+alias "composer"="php /usr/local/bin/composer"
 
-# alias "php"="/usr/local/Cellar/php/7.4.5/bin/php"
+alias "php"="/usr/local/Cellar/php/7.4.9/bin/php"
+
+export LDFLAGS="-L/usr/local/opt/libffi/lib"
+export CPPFLAGS="-I/usr/local/opt/libffi/include"
+
 # rabbitmq
 export PATH=$PATH:/usr/local/opt/rabbitmq/sbin
 

@@ -1,4 +1,3 @@
-"==============================================================================
 " 自用的 vim 配置文件。:
 " widows/linux 下的 Gvim8;
 " macOS 下的 macvim 和 vim8
@@ -8,7 +7,7 @@
 "==============================================================================
 
 syntax on
-set synmaxcol=128
+set synmaxcol=200
 set pyxversion=3
 syntax sync minlines=256
 " set pastetoggle=<F12>
@@ -49,15 +48,10 @@ set signcolumn=yes
 
 " folding
 set foldmethod=syntax
-set foldenable " 預設全部關閉
+set foldlevelstart=1
 set foldnestmax=3
-" set foldcolumn=1
-set foldlevel=1
 
-" php
-let php_folding = 1 " php 預設
-" fix switch statements error"
-let g:PHP_vintage_case_default_indent = 1
+let php_folding = 1
 
 map <silent> <C-C> <Esc>
 inoremap <silent> <C-C> <Esc>
@@ -71,6 +65,13 @@ let maplocalleader="-"
 " Split windows fast
 nnoremap <leader>\ :vs<CR>
 nnoremap <leader>- :sp<CR>
+nnoremap n nzz
+nnoremap N Nzz
+
+map <F2> :!git shortlog -s -n %<CR>
+
+" quick save file, exit file
+nnoremap <leader>w :w<CR>
 
 " Some basic PSR code style rules
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
@@ -86,7 +87,7 @@ set sidescrolloff=5
 " Use spaces instead to tabs
 set expandtab
 " Set wrap
-set wrap
+set nowrap
 " Ignore case when searching
 set ignorecase
 " When searching try to be smart about cases
@@ -135,6 +136,7 @@ Plug 'editorconfig/editorconfig-vim'
 
 " Use release branch (Recommend)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'kkoomen/vim-doge'
 Plug 'ap/vim-css-color'
 " Plug 'neoclide/coc-json'
 " Plug 'neoclide/coc-tsserver'
@@ -150,7 +152,7 @@ Plug 'ap/vim-css-color'
 " Plug 'neoclide/coc-html', {'do': 'yarn install --frozen-lockfile'}
 " Need to manually run :CocInstall coc-phpls
 " Plug 'marlonfan/coc-phpls', {'do': 'yarn install --frozen-lockfile'}
-Plug 'sheerun/vim-polyglot'
+" Plug 'sheerun/vim-polyglot'
 
 " js plugins
 Plug 'posva/vim-vue'
@@ -184,6 +186,7 @@ nmap [h <Plug>(GitGutterPrevHunk)
 let NERDTreeQuitOnOpen=1
 let NERDTreeMapActivateNode='l'
 let NERDTreeMapCloseDir='h'
+let NERDTreeMapToggleHidden='.'
 
 " Airline Settings
 let g:airline#extensions#ale#enabled = 1
@@ -227,7 +230,7 @@ command! -bang -nargs=* Rg
 nnoremap <silent> <Leader>R :Rg<CR>
 
 " Automatically removing all trailing whitespace
-" autocmd BufWritePre * %s/\s\+$//e
+autocmd BufWritePre * %s/\s\+$//e
 
 " Vim-easy-align settings
 " Start interactive EasyAlign in visual mode (e.g. vipga)

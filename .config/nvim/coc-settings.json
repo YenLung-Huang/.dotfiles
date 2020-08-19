@@ -1,0 +1,9 @@
+{
+        "codeLens.enable": true,
+        "diagnostic.infoSign": "ℹ",
+        "diagnostic.hintSign": "☀",
+        "diagnostic.warningSign": "⚠",
+        "diagnostic.errorSign": "✗",
+        "diagnostic.enable": true,
+        "intelephense.licenceKey": "00WIX4YQOC6G943"
+}
