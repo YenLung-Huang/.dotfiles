@@ -5,5 +5,13 @@
         "diagnostic.warningSign": "⚠",
         "diagnostic.errorSign": "✗",
         "diagnostic.enable": true,
-        "intelephense.licenceKey": "00WIX4YQOC6G943"
+        "intelephense.licenceKey": "00WIX4YQOC6G943",
+        "explorer.icon.enableNerdfont": true,
+        "explorer.quitOnOpen": true,
+        "explorer.keyMappings.global": {
+                "E": "open:split",
+                "s": "open:vsplit"
+        },
+        "explorer.file.autoReveal": false,
+        "explorer.previewAction.onHover": false
 }
