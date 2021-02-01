@@ -15,7 +15,7 @@ export EDITOR="nvim"
 # export PATH=~/.composer/vendor/bin:$PATH
 alias "composer"="php /usr/local/bin/composer"
 
-alias "php"="/usr/local/Cellar/php/7.4.9/bin/php"
+alias "php"="/usr/local/Cellar/php@7.4/7.4.13_1/bin/php"
 
 export LDFLAGS="-L/usr/local/opt/libffi/lib"
 export CPPFLAGS="-I/usr/local/opt/libffi/include"
