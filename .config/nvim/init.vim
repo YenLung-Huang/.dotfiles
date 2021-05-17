@@ -6,10 +6,9 @@
 " Licence:      MIT
 "==============================================================================
 
-syntax on
-set synmaxcol=200
+" syntax on
 set pyxversion=3
-syntax sync minlines=256
+" syntax sync minlines=256
 " set pastetoggle=<F12>
 set nocompatible
 set path+=**
@@ -27,6 +26,7 @@ set showcmd
 set lazyredraw
 set grepprg=rg\ --vimgrep\ --no-heading\ --smart-case
 set hidden " if hidden is not set, TextEdit might fail.
+set regexpengine=1
 
 " Some servers have issues with backup files, see #649
 set nobackup
@@ -43,17 +43,11 @@ set foldmethod=syntax
 set foldlevelstart=1
 set foldnestmax=3
 
-let php_folding = 1
-
 map <silent> <C-C> <esc>
 inoremap <silent> <C-C> <esc>
 
-" make jump to current file work on neovim
-map <silent> <C-6> :e# <CR>
-map <silent> <C-^> :e# <CR>
-
 " nohlsearch shortcut
-nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+nnoremap <silent> <C-l> :nohlsearch<CR>
 let mapleader=" " " our <leader> will be the space key
 let maplocalleader="-" " our <localleader> will be the '-' key
 "
@@ -82,15 +76,7 @@ set incsearch           " search as characters are entered
 set hlsearch            " highlight matches
 set encoding=utf-8  " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
-set tags=tags,tags.vendor
-if has("gui_running")
-        set renderoptions=type:directx
-        set guifont=Fira\ Code\ Retina:h14
-        set guioptions-=m  "remove menu bar
-        set guioptions-=T  "remove toolbar
-        set guioptions-=r  "remove right-hand scroll bar
-        set guioptions-=L  "remove left-hand scroll bar
-endif
+" set tags=tags,tags.vendor
 
 "==============================================================================
 "========================== Third plugins
@@ -98,43 +84,38 @@ endif
 
 call plug#begin('~/.vim/plugged')
 " Enhanced plugins
-Plug 'scrooloose/nerdcommenter'
-Plug 'preservim/nerdtree'
-Plug 'airblade/vim-gitgutter'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+" Plug 'airblade/vim-gitgutter'
+Plug 'mhinz/vim-signify'
 Plug 'vim-airline/vim-airline'
-" Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-" Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
+Plug 'wakatime/vim-wakatime'
+" Plug 'Yggdroot/indentLine'
+" Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'arcticicestudio/nord-vim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
 Plug 'kshenoy/vim-signature'
-" Plug 'mattn/emmet-vim'
-Plug 'ryanoasis/vim-devicons'
+Plug 'blueyed/smarty.vim'
 
-" Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
+Plug 'mattn/emmet-vim'
 
 " Use release branch (Recommend)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 
 " js plugins
-Plug 'posva/vim-vue'
+" Plug 'posva/vim-vue'
 
 if has('nvim')
   Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
   Plug 'kristijanhusak/defx-git'
-  Plug 'kristijanhusak/defx-icons'
 else
   Plug 'Shougo/defx.nvim'
   Plug 'kristijanhusak/defx-git'
-  Plug 'kristijanhusak/defx-icons'
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
@@ -151,7 +132,7 @@ call defx#custom#option('_', {
       \ 'buffer_name': 'defxplorer',
       \ 'toggle': 1,
       \ 'resume': 1,
-      \ 'columns': 'indent:git:icons:filename:mark',
+      \ 'columns': 'indent:git:mark:icon:filename:type',
       \ })
 
 " disbale syntax highlighting to prevent performence issue
@@ -188,11 +169,11 @@ function! s:defx_my_settings() abort
 		\ defx#do_action('multi', ['drop', 'quit'])
         nnoremap <silent><buffer><expr> s
                                 \ defx#do_action('multi', [['drop', 'vsplit'], 'quit'])
-        nnoremap <silent><buffer><expr> A
-                                \ defx#do_action('new_directory')
-        nnoremap <silent><buffer><expr> a
-                                \ defx#do_action('new_file')
         nnoremap <silent><buffer><expr> d
+                                \ defx#do_action('new_directory')
+        nnoremap <silent><buffer><expr> %
+                                \ defx#do_action('new_file')
+        nnoremap <silent><buffer><expr> D
                                 \ defx#do_action('remove')
         nnoremap <silent><buffer><expr> r
                                 \ defx#do_action('rename')
@@ -216,10 +197,8 @@ function! s:defx_my_settings() abort
 	                        \ defx#do_action('cd', ['..'])
         nnoremap <silent><buffer><expr> q
                                 \ defx#do_action('quit')
-        nnoremap <silent><buffer><expr> <Space>
-                                \ defx#do_action('toggle_select') . 'j'
         nnoremap <silent><buffer><expr> *
-                                \ defx#do_action('toggle_select_all')
+                                \ defx#do_action('toggle_select') . 'j'
         nnoremap <silent><buffer><expr> j
                                 \ line('.') == line('$') ? 'gg' : 'j'
         nnoremap <silent><buffer><expr> k
@@ -244,33 +223,23 @@ nmap <silent> <C-\> :Defx <CR>
 nmap <silent> ]c :cn<CR>
 nmap <silent> [c :cp<CR>
 
-" Git gutter
-function! GitStatus()
-  let [a,m,r] = GitGutterGetHunkSummary()
-  return printf('+%d ~%d -%d', a, m, r)
+" signify settings
+" g is means git
+nnoremap <leader>gd :SignifyDiff<cr>
+nnoremap <leader>gp :SignifyHunkDiff<cr>
+nnoremap <leader>gu :SignifyHunkUndo<cr>
+
+nmap ]h <plug>(signify-next-hunk)
+nmap [h <plug>(signify-prev-hunk)
+
+autocmd User SignifyHunk call s:show_current_hunk()
+
+function! s:show_current_hunk() abort
+        let h = sy#util#get_hunk_stats()
+        if !empty(h)
+                echo printf('[Hunk %d/%d]', h.current_hunk, h.total_hunks)
+        endif
 endfunction
-set statusline+=%{GitStatus()}
-
-nmap ]h <Plug>(GitGutterNextHunk)
-nmap [h <Plug>(GitGutterPrevHunk)
-
-
-" Check if NERDTree is open or active
-function! IsNERDTreeOpen()
-  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
-endfunction
-
-" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
-" file, and we're not in vimdiff
-function! SyncTree()
-  if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
-    NERDTreeFind
-    wincmd p
-  endif
-endfunction
-
-" Highlight currently open buffer in NERDTree
-autocmd BufRead * call SyncTree()
 
 " Airline Settings
 let g:airline#extensions#ale#enabled = 1
@@ -278,17 +247,7 @@ let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep ='|'
 let g:airline#extensions#tabline#formatter = 'default'
-let g:airline_theme='nord'
-
-" Ale
-let b:ale_linters = ['phpcs', 'php']
-let g:ale_fixers = {
-\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\   'php': ['php_cs_fixer'],
-\}
-let g:ale_php_phpcs_standard = 'PSR2'
-let g:ale_php_phpcs_use_global = 1
-let g:ale_fix_on_save = 1
+" let g:airline_theme='nord'
 
 " nerdCommenter Settings"
 let g:NERDSpaceDelims=1
@@ -307,12 +266,12 @@ command! -bang -nargs=* Rg
 nnoremap <silent> <Leader>R :Rg<CR>
 
 " Automatically removing all trailing whitespace
-autocmd BufWritePre * %s/\s\+$//e
+" autocmd BufWritePre * %s/\s\+$//e
 
 " Vim-easy-align settings
 " Start interactive EasyAlign in visual mode (e.g. vipga)
-vmap <Leader>a <Plug>(EasyAlign)
-nmap <Leader>a <Plug>(EasyAlign)
+vmap <Leader>al <Plug>(EasyAlign)
+nmap <Leader>al <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 
 if !exists('g:easy_align_delimiters')
@@ -320,28 +279,6 @@ if !exists('g:easy_align_delimiters')
 endif
 
 let g:easy_align_delimiters['#'] = { 'pattern': '#', 'ignore_groups': ['String'] }
-
-function! IPhpExpandClass()
-    call PhpExpandClass()
-    call feedkeys('a', 'n')
-endfunction
-" autocmd FileType php inoremap <Leader>e <Esc>:call IPhpExpandClass()<CR>
-autocmd FileType php noremap <Leader>e :call PhpExpandClass()<CR>
-
-" ctags
-function! UpdateTags()
-  let tags = 'tags'
-
-  if filereadable(tags)
-    let file = substitute(expand('%:p'), getcwd() . '/', '', '')
-
-    " remove tags of file
-    call system('sed -ri "/\s+' . escape(file, './') . '/d"' . tags)
-
-    " append tags of file
-    call system('ctags -a "' . file . '"')
-  endif
-endfunction
 
 " Fixed vim pasting
 " Because Vim doesn't like
@@ -381,7 +318,7 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " Or use `complete_info` if your vim support it, like:
-" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -394,7 +331,7 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " show chunk diff at current position
-nmap gs <Plug>(coc-git-chunkinfo)
+" nmap gs <Plug>(coc-git-chunkinfo)
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -402,13 +339,16 @@ nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
   else
-    call CocAction('doHover')
+    execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
 
-" Highlight symbol under cursor on CursorHold
-autocmd CursorHold * silent call CocActionAsync('highlight')
+" Highlight symbol under cursor on CursorHold coc-highlight will slow down
+" when open log
+" autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
@@ -428,11 +368,11 @@ augroup mygroup
 augroup end
 
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-" xmap <leader>a  <Plug>(coc-codeaction-selected)
-" nmap <leader>a  <Plug>(coc-codeaction-selected)
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
 
 " Remap for do codeAction of current line
-" nmap <leader>ac  <Plug>(coc-codeaction)
+nmap <leader>ac  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
 
@@ -468,11 +408,16 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
 
+" Netrw
+let g:netrw_liststyle=1
+
+nnoremap <leader>e :Explore<CR>
+
 " Using CocList
 " Show all diagnostics
 " nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
 " Manage extensions
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
 " Show commands
 nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
 " Find symbol of current document
@@ -502,7 +447,8 @@ inoremap <C-e> <End>
 inoremap <C-f> <Right>
 
 " Vim-fugitive
-nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gb :Git blame<CR>
+nnoremap <leader>gs :Git<CR>
 
 " ultisnips
 " let g:UltiSnipsExpandTrigger = '<TAB>'
@@ -525,6 +471,12 @@ let g:coc_snippet_prev = '<c-k>'
 " Use <C-j> for both expand and jump (make expand higher priority.)
 imap <C-j> <Plug>(coc-snippets-expand-jump)
 color nord
+
+" this sometimes will freeze the file
+let g:coc_markdown_disabled_languages = ['php', 'log', 'javascript']
+
+let g:indentLine_fileTypeExclude = ['defx']
+let g:indent_blankline_char = '¦'
 
 autocmd FileType defx setlocal nonumber
 autocmd BufWritePost * call defx#redraw()
