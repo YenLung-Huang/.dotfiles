@@ -6,7 +6,7 @@
 " Licence:      MIT
 "==============================================================================
 
-" syntax on
+syntax on
 set pyxversion=3
 " syntax sync minlines=256
 " set pastetoggle=<F12>
@@ -40,8 +40,10 @@ set signcolumn=yes " always show signcolumns
 
 " folding
 set foldmethod=syntax
-set foldlevelstart=1
-set foldnestmax=3
+set foldnestmax=10
+set nofoldenable
+set foldlevel=2
+set foldopen-=block
 
 map <silent> <C-C> <esc>
 inoremap <silent> <C-C> <esc>
@@ -84,20 +86,19 @@ set fileencoding=utf-8  " The encoding written to file.
 
 call plug#begin('~/.vim/plugged')
 " Enhanced plugins
-" Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-signify'
 Plug 'vim-airline/vim-airline'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'wakatime/vim-wakatime'
-" Plug 'Yggdroot/indentLine'
-" Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'vim-test/vim-test'
+" Plug 'tpope/vim-vinegar'
 Plug 'arcticicestudio/nord-vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-commentary'
 Plug 'kshenoy/vim-signature'
 Plug 'blueyed/smarty.vim'
 
@@ -123,16 +124,22 @@ endif
 " Initialize plugin system
 call plug#end()
 
+
+"==============================================================================
+"=============================== Plugin Setting
+"==============================================================================
+"
+" Vim-commentary
+autocmd FileType php setlocal commentstring=//\ %s
+
 " Defx settings
 call defx#custom#option('_', {
-      \ 'winwidth': 30,
-      \ 'split': 'vertical',
       \ 'direction': 'topleft',
       \ 'show_ignored_files': 0,
       \ 'buffer_name': 'defxplorer',
       \ 'toggle': 1,
       \ 'resume': 1,
-      \ 'columns': 'indent:git:mark:icon:filename:type',
+      \ 'columns': 'indent:git:mark:filename:type:size:time',
       \ })
 
 " disbale syntax highlighting to prevent performence issue
@@ -214,23 +221,28 @@ endfunction
 " Reveal file in defx
 nnoremap <silent> <F4>     :<C-u>Defx -resume -search=`expand('%:p')` `getcwd()`<CR>
 autocmd FileType defx call s:defx_my_settings()
-nmap <silent> <C-\> :Defx <CR>
+nnoremap <leader>e :Defx<CR>
+" Test
+let g:test#php#phpunit#executable = 'docker exec suitecrm_suitecrm_1 ./vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist --stop-on-failure'
+" these "Ctrl mappings" work well when Caps Lock is mapped to Ctrl
+" nmap <silent> t<C-n> :TestNearest<CR>
+nmap <leader>tf :TestFile<CR>
+" nmap <silent> t<C-s> :TestSuite<CR>
+nmap <leader>tl :TestLast<CR>
+nmap <leader>tv :TestVisit<CR> 
 
-"==============================================================================
-"=============================== Plugin Setting
-"==============================================================================
-
-nmap <silent> ]c :cn<CR>
-nmap <silent> [c :cp<CR>
+if has('nvim')
+  tmap <C-o> <C-\><C-n>
+endif
 
 " signify settings
 " g is means git
-nnoremap <leader>gd :SignifyDiff<cr>
+nnoremap <leader>gd :Gdiffsplit!<cr>
 nnoremap <leader>gp :SignifyHunkDiff<cr>
 nnoremap <leader>gu :SignifyHunkUndo<cr>
 
-nmap ]h <plug>(signify-next-hunk)
-nmap [h <plug>(signify-prev-hunk)
+nmap <leader>gj <plug>(signify-next-hunk)
+nmap <leader>gk <plug>(signify-prev-hunk)
 
 autocmd User SignifyHunk call s:show_current_hunk()
 
@@ -247,7 +259,7 @@ let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep ='|'
 let g:airline#extensions#tabline#formatter = 'default'
-" let g:airline_theme='nord'
+let g:airline_theme='nord'
 
 " nerdCommenter Settings"
 let g:NERDSpaceDelims=1
@@ -256,6 +268,12 @@ let g:NERDCustomDelimiters = { 'php': { 'left': '//'}, 'html': { 'left': '<!--',
 " fzf
 nnoremap <silent> <Leader>p :Files<CR>
 nnoremap <silent> <Leader>b :Buffers<CR>
+
+" Pass an empty option dictionary if the screen is narrow
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, &columns > 80 ? fzf#vim#with_preview() : {}, <bang>0)
+
+" let g:fzf_preview_window = []
 
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
@@ -329,9 +347,6 @@ nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-
-" show chunk diff at current position
-" nmap gs <Plug>(coc-git-chunkinfo)
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -408,10 +423,6 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
 
-" Netrw
-let g:netrw_liststyle=1
-
-nnoremap <leader>e :Explore<CR>
 
 " Using CocList
 " Show all diagnostics
