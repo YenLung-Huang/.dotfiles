@@ -8,8 +8,6 @@
 
 syntax on
 set pyxversion=3
-" syntax sync minlines=256
-" set pastetoggle=<F12>
 set nocompatible
 set path+=**
 set clipboard=unnamed " 讓os跟vim的clipboard 共用
@@ -47,25 +45,20 @@ set foldopen-=block
 
 map <silent> <C-C> <esc>
 inoremap <silent> <C-C> <esc>
-
 " nohlsearch shortcut
 nnoremap <silent> <C-l> :nohlsearch<CR>
 let mapleader=" " " our <leader> will be the space key
 let maplocalleader="-" " our <localleader> will be the '-' key
-"
 " Split windows fast
 nnoremap <leader>\ :vs<CR>
 nnoremap <leader>- :sp<CR>
 nnoremap n nzz
 nnoremap N Nzz
-
 " quick save file, exit file
 nnoremap <leader>w :w<CR>
-
 " Move visual selection
 nnoremap j gj
 nnoremap k gk
-
 set scrolloff=3
 set sidescrolloff=5
 " Use spaces instead to tabs
@@ -92,137 +85,99 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'vim-test/vim-test'
-" Plug 'tpope/vim-vinegar'
-Plug 'arcticicestudio/nord-vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-vinegar'
 Plug 'kshenoy/vim-signature'
 Plug 'blueyed/smarty.vim'
-
+Plug 'arcticicestudio/nord-vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'
 
 " Use release branch (Recommend)
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neovim/nvim-lspconfig'
 
 " js plugins
 " Plug 'posva/vim-vue'
 
-if has('nvim')
-  Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
-  Plug 'kristijanhusak/defx-git'
-else
-  Plug 'Shougo/defx.nvim'
-  Plug 'kristijanhusak/defx-git'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-
 " Initialize plugin system
 call plug#end()
+
+lua << EOF
+require'lspconfig'.intelephense.setup{}
+
+local nvim_lsp = require('lspconfig')
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  --Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+
+end
+
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { "intelephense", "tsserver" }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach,
+    flags = {
+      debounce_text_changes = 150,
+    }
+  }
+end
+
+EOF
 
 
 "==============================================================================
 "=============================== Plugin Setting
 "==============================================================================
-"
+
+" Netr
+let g:netrw_fastbrowse = 0 " close buffer when open file
+autocmd FileType netrw setl bufhidden=delete
+let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
+let g:netrw_localcopydircmd = 'cp -r'
+let g:netrw_sizestyle = 'h'
+hi! link netrwMarkFile Search
+nnoremap <leader>eo :Explore<CR> " Explore file current directory
+nnoremap <leader>el :ex.<CR> " Explore project directory list
+
 " Vim-commentary
 autocmd FileType php setlocal commentstring=//\ %s
 
-" Defx settings
-call defx#custom#option('_', {
-      \ 'direction': 'topleft',
-      \ 'show_ignored_files': 0,
-      \ 'buffer_name': 'defxplorer',
-      \ 'toggle': 1,
-      \ 'resume': 1,
-      \ 'columns': 'indent:git:mark:filename:type:size:time',
-      \ })
-
-" disbale syntax highlighting to prevent performence issue
-let g:defx_icons_enable_syntax_highlight = 0
-
-let g:defx_git#indicators = {
-  \ 'Modified'  : '✹',
-  \ 'Staged'    : '✚',
-  \ 'Untracked' : '✭',
-  \ 'Renamed'   : '➜',
-  \ 'Unmerged'  : '═',
-  \ 'Ignored'   : '☒',
-  \ 'Deleted'   : '✖',
-  \ 'Unknown'   : '?'
-  \ }
-
-function! s:defx_my_settings() abort
-        " Define mappings
-        nnoremap <silent><buffer><expr> <CR>
-                                \ defx#is_directory() ?
-                                \ defx#do_action('open') :
-                                \ defx#do_action('multi', ['drop', 'quit'])
-        nnoremap <silent><buffer><expr> c
-                                \ defx#do_action('copy')
-        nnoremap <silent><buffer><expr> m
-                                \ defx#do_action('move')
-        nnoremap <silent><buffer><expr> p
-                                \ defx#do_action('paste')
-        nnoremap <silent><buffer><expr> P
-                                \ defx#do_action('preview')
-        nnoremap <silent><buffer><expr> l
-		\ defx#is_directory() ?
-                \ defx#do_action('open_tree', 'toggle') :
-		\ defx#do_action('multi', ['drop', 'quit'])
-        nnoremap <silent><buffer><expr> s
-                                \ defx#do_action('multi', [['drop', 'vsplit'], 'quit'])
-        nnoremap <silent><buffer><expr> d
-                                \ defx#do_action('new_directory')
-        nnoremap <silent><buffer><expr> %
-                                \ defx#do_action('new_file')
-        nnoremap <silent><buffer><expr> D
-                                \ defx#do_action('remove')
-        nnoremap <silent><buffer><expr> r
-                                \ defx#do_action('rename')
-        nnoremap <silent><buffer><expr> .
-                                \ defx#do_action('toggle_ignored_files')
-        nnoremap <silent><buffer><expr> !
-                                \ defx#do_action('execute_command')
-        nnoremap <silent><buffer><expr> x
-                                \ defx#do_action('execute_system')
-        nnoremap <silent><buffer><expr> yy
-                                \ defx#do_action('yank_path')
-        nnoremap <silent><buffer><expr> .
-                                \ defx#do_action('toggle_ignored_files')
-        nnoremap <silent><buffer><expr> ;
-                                \ defx#do_action('repeat')
-        nnoremap <silent><buffer><expr> h
-                                \ defx#do_action('close_tree')
-        nnoremap <silent><buffer><expr> ~
-                                \ defx#do_action('cd')
-	nnoremap <silent><buffer><expr> <BS>
-	                        \ defx#do_action('cd', ['..'])
-        nnoremap <silent><buffer><expr> q
-                                \ defx#do_action('quit')
-        nnoremap <silent><buffer><expr> *
-                                \ defx#do_action('toggle_select') . 'j'
-        nnoremap <silent><buffer><expr> j
-                                \ line('.') == line('$') ? 'gg' : 'j'
-        nnoremap <silent><buffer><expr> k
-                                \ line('.') == 1 ? 'G' : 'k'
-        nnoremap <silent><buffer><expr> <C-r>
-                                \ defx#do_action('redraw')
-        nnoremap <silent><buffer><expr> cd
-                                \ defx#do_action('change_vim_cwd')
-        nnoremap <silent><buffer><expr> P defx#do_action('search',
-                                \ fnamemodify(defx#get_candidate().action__path, ':h'))
-endfunction
-
-" Reveal file in defx
-nnoremap <silent> <F4>     :<C-u>Defx -resume -search=`expand('%:p')` `getcwd()`<CR>
-autocmd FileType defx call s:defx_my_settings()
-nnoremap <leader>e :Defx<CR>
-" Test
+" Vim-Test
 let g:test#php#phpunit#executable = 'docker exec suitecrm_suitecrm_1 ./vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist --stop-on-failure'
 " these "Ctrl mappings" work well when Caps Lock is mapped to Ctrl
 " nmap <silent> t<C-n> :TestNearest<CR>
@@ -230,14 +185,14 @@ nmap <leader>tf :TestFile<CR>
 " nmap <silent> t<C-s> :TestSuite<CR>
 nmap <leader>tl :TestLast<CR>
 nmap <leader>tv :TestVisit<CR> 
-
+" back to normal mode from terminal mode
 if has('nvim')
   tmap <C-o> <C-\><C-n>
 endif
 
 " signify settings
 " g is means git
-nnoremap <leader>gd :Gdiffsplit!<cr>
+nnoremap <leader>gd :Gvdiffsplit<cr>
 nnoremap <leader>gp :SignifyHunkDiff<cr>
 nnoremap <leader>gu :SignifyHunkUndo<cr>
 
@@ -254,16 +209,10 @@ function! s:show_current_hunk() abort
 endfunction
 
 " Airline Settings
-let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep ='|'
 let g:airline#extensions#tabline#formatter = 'default'
 let g:airline_theme='nord'
-
-" nerdCommenter Settings"
-let g:NERDSpaceDelims=1
-let g:NERDCustomDelimiters = { 'php': { 'left': '//'}, 'html': { 'left': '<!--', 'right': '-->'}}
 
 " fzf
 nnoremap <silent> <Leader>p :Files<CR>
@@ -271,10 +220,12 @@ nnoremap <silent> <Leader>b :Buffers<CR>
 
 " Pass an empty option dictionary if the screen is narrow
 command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, &columns > 80 ? fzf#vim#with_preview() : {}, <bang>0)
+  \ call fzf#vim#files(<q-args>, &columns > 120 ? fzf#vim#with_preview() : {}, <bang>0)
+
+command! -bang -nargs=? -complete=dir Buffers
+  \ call fzf#vim#buffers(<q-args>, &columns > 120 ? fzf#vim#with_preview() : {}, <bang>0)
 
 " let g:fzf_preview_window = []
-
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep(
   \   "rg --column --line-number --hidden --glob '!.git' --smart-case --no-heading --color=always ".shellescape(<q-args>), 1,
@@ -314,133 +265,6 @@ endfunction
 " end fixed
 
 
-" Coc vim settings
-
-" Use tab for trigger completion with characters ahead and navigate.
-" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
-" Coc only does snippet and additional edit on confirm.
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" Or use `complete_info` if your vim support it, like:
-inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
-" Highlight symbol under cursor on CursorHold coc-highlight will slow down
-" when open log
-" autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Remap for rename current word
-nmap <leader>rn <Plug>(coc-rename)
-
-" Coc-prettier
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-" Remap for format selected region
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Create mappings for function text object, requires document symbols feature of languageserver.
-xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap if <Plug>(coc-funcobj-i)
-omap af <Plug>(coc-funcobj-a)
-
-" Use <C-d> for select selections ranges, needs server support, like: coc-tsserver, coc-python
-" nmap <silent> <C-d> <Plug>(coc-range-select)
-" xmap <silent> <C-d> <Plug>(coc-range-select)
-
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" use `:OR` for organize import of current buffer
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-" Add status line support, for integration with other plugin, checkout `:h coc-status`
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-" Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
-
-
-" Using CocList
-" Show all diagnostics
-" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
 " Emacs and bash style insert mode CTRL shortcuts
 " <C-a> = Move to start of the line; like in vim command mode: c_ctrl-b; To insert previously inserted text, use <C-r>. or <Alt-.> (below)
@@ -460,35 +284,40 @@ inoremap <C-f> <Right>
 " Vim-fugitive
 nnoremap <leader>gb :Git blame<CR>
 nnoremap <leader>gs :Git<CR>
+nnoremap <leader>gl :Gclog -10 -- %<CR>
+
 
 " ultisnips
 " let g:UltiSnipsExpandTrigger = '<TAB>'
 " let g:UltiSnipsListSnippets = '<Leader><TAB>'
 " let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 " let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
-" coc-snippets
-" Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
 
-" Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
+if (empty($TMUX))
+  if (has("nvim"))
+    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+  endif
 
-" Use <C-j> for jump to next placeholder, it's default of coc.nvim
-let g:coc_snippet_next = '<c-j>'
-
-" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-let g:coc_snippet_prev = '<c-k>'
-
-" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-color nord
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+endif
 
 " this sometimes will freeze the file
-let g:coc_markdown_disabled_languages = ['php', 'log', 'javascript']
 
-let g:indentLine_fileTypeExclude = ['defx']
-let g:indent_blankline_char = '¦'
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
 
-autocmd FileType defx setlocal nonumber
-autocmd BufWritePost * call defx#redraw()
-autocmd BufEnter * call defx#redraw()
+
+" add this to avoid delay from sql, text file
+if ! has('gui_running')
+    set ttimeoutlen=10
+    augroup FastEscape
+        autocmd!
+        au InsertEnter * set timeoutlen=0
+        au InsertLeave * set timeoutlen=1000
+    augroup END
+endif
+
+colorscheme nord
