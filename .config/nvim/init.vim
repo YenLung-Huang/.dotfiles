@@ -8,7 +8,6 @@
 
 syntax on
 set pyxversion=3
-set nocompatible
 set path+=**
 set clipboard=unnamed " 讓os跟vim的clipboard 共用
 set number nu
@@ -36,13 +35,6 @@ set updatetime=100 " You will have bad experience for diagnostic messages when i
 set shortmess+=c " don't give |ins-completion-menu| messages.
 set signcolumn=yes " always show signcolumns
 
-" folding
-set foldmethod=syntax
-set foldnestmax=10
-set nofoldenable
-set foldlevel=2
-set foldopen-=block
-
 map <silent> <C-C> <esc>
 inoremap <silent> <C-C> <esc>
 " nohlsearch shortcut
@@ -54,6 +46,9 @@ nnoremap <leader>\ :vs<CR>
 nnoremap <leader>- :sp<CR>
 nnoremap n nzz
 nnoremap N Nzz
+nnoremap <C-o> <C-o>zz
+nnoremap <C-i> <C-i>zz
+
 " quick save file, exit file
 nnoremap <leader>w :w<CR>
 " Move visual selection
@@ -72,6 +67,8 @@ set hlsearch            " highlight matches
 set encoding=utf-8  " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
 " set tags=tags,tags.vendor
+set bg=dark
+set completeopt-=preview
 
 "==============================================================================
 "========================== Third plugins
@@ -79,8 +76,12 @@ set fileencoding=utf-8  " The encoding written to file.
 
 call plug#begin('~/.vim/plugged')
 " Enhanced plugins
-Plug 'mhinz/vim-signify'
-Plug 'vim-airline/vim-airline'
+" Plug 'mhinz/vim-signify'
+Plug 'airblade/vim-gitgutter'
+Plug 'akinsho/bufferline.nvim'
+Plug 'hoob3rt/lualine.nvim'
+" Plug 'nvim-lua/plenary.nvim'
+" Plug 'lewis6991/gitsigns.nvim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
@@ -90,16 +91,19 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-vinegar'
+" Plug 'tpope/vim-vinegar'
 Plug 'kshenoy/vim-signature'
 Plug 'blueyed/smarty.vim'
-Plug 'arcticicestudio/nord-vim'
+" Plug 'arcticicestudio/nord-vim'
+Plug 'shaunsingh/nord.nvim'
+Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'
 
 " Use release branch (Recommend)
 " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neovim/nvim-lspconfig'
+Plug 'kabouzeid/nvim-lspinstall'
 
 " js plugins
 " Plug 'posva/vim-vue'
@@ -108,7 +112,19 @@ Plug 'neovim/nvim-lspconfig'
 call plug#end()
 
 lua << EOF
-require'lspconfig'.intelephense.setup{}
+require('lspconfig').intelephense.setup{}
+require("bufferline").setup{}
+require('lualine').setup {
+  options = {
+    theme = 'nord'
+  }
+}
+
+vim.g.nord_contrast = true
+vim.g.nord_borders = true
+vim.g.nord_disable_background = false
+vim.g.nord_italic = true
+require('nord').set()
 
 local nvim_lsp = require('lspconfig')
 
@@ -145,6 +161,8 @@ local on_attach = function(client, bufnr)
 
 end
 
+require'lspinstall'.setup()
+
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local servers = { "intelephense", "tsserver" }
@@ -171,8 +189,8 @@ let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 let g:netrw_localcopydircmd = 'cp -r'
 let g:netrw_sizestyle = 'h'
 hi! link netrwMarkFile Search
-nnoremap <leader>eo :Explore<CR> " Explore file current directory
-nnoremap <leader>el :ex.<CR> " Explore project directory list
+" nnoremap <leader>eo :Explore<CR> " Explore file current directory
+" nnoremap <leader>el :ex.<CR> " Explore project directory list
 
 " Vim-commentary
 autocmd FileType php setlocal commentstring=//\ %s
@@ -193,11 +211,9 @@ endif
 " signify settings
 " g is means git
 nnoremap <leader>gd :Gvdiffsplit<cr>
-nnoremap <leader>gp :SignifyHunkDiff<cr>
-nnoremap <leader>gu :SignifyHunkUndo<cr>
 
-nmap <leader>gj <plug>(signify-next-hunk)
-nmap <leader>gk <plug>(signify-prev-hunk)
+nmap ]h <Plug>(GitGutterNextHunk)
+nmap [h <Plug>(GitGutterPrevHunk)
 
 autocmd User SignifyHunk call s:show_current_hunk()
 
@@ -207,12 +223,6 @@ function! s:show_current_hunk() abort
                 echo printf('[Hunk %d/%d]', h.current_hunk, h.total_hunks)
         endif
 endfunction
-
-" Airline Settings
-let g:airline#extensions#tabline#enabled=1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#formatter = 'default'
-let g:airline_theme='nord'
 
 " fzf
 nnoremap <silent> <Leader>p :Files<CR>
@@ -286,6 +296,77 @@ nnoremap <leader>gb :Git blame<CR>
 nnoremap <leader>gs :Git<CR>
 nnoremap <leader>gl :Gclog -10 -- %<CR>
 
+" Defx
+nnoremap <leader>eo :Defx `escape(expand('%:p:h'), ' :')` -search=`expand('%:p')`<CR> " Explore file current directory
+nnoremap <leader>el :Defx -new<CR> " Explore project directory list
+" This make defx works like vinegar plugins
+nnoremap - :Defx `escape(expand('%:p:h'), ' :')` -search=`expand('%:p')` -new<CR> " Explore file current directory
+
+autocmd FileType defx call s:defx_my_settings()
+function! s:defx_my_settings() abort
+        " Define mappings
+        nnoremap <silent><buffer><expr> <CR>
+                                \ defx#do_action('open')
+        nnoremap <silent><buffer><expr> c
+                                \ defx#do_action('copy')
+        nnoremap <silent><buffer><expr> m
+                                \ defx#do_action('move')
+        nnoremap <silent><buffer><expr> p
+                                \ defx#do_action('paste')
+        nnoremap <silent><buffer><expr> h
+                                \ defx#do_action('close_tree')
+        nnoremap <silent><buffer><expr> l
+                                \ defx#do_action('open_tree')
+        nnoremap <silent><buffer><expr> E
+                                \ defx#do_action('open', 'vsplit')
+        nnoremap <silent><buffer><expr> P
+                                \ defx#do_action('preview')
+        nnoremap <silent><buffer><expr> o
+                                \ defx#do_action('open_tree', 'toggle')
+        nnoremap <silent><buffer><expr> K
+                                \ defx#do_action('new_directory')
+        nnoremap <silent><buffer><expr> %
+                                \ defx#do_action('new_file')
+        nnoremap <silent><buffer><expr> C
+                                \ defx#do_action('toggle_columns',
+                                \                'mark:indent:icon:filename:type:size:time')
+        nnoremap <silent><buffer><expr> S
+                                \ defx#do_action('toggle_sort', 'time')
+        nnoremap <silent><buffer><expr> D
+                                \ defx#do_action('remove')
+        nnoremap <silent><buffer><expr> r
+                                \ defx#do_action('rename')
+        nnoremap <silent><buffer><expr> !
+                                \ defx#do_action('execute_command')
+        nnoremap <silent><buffer><expr> x
+                                \ defx#do_action('execute_system')
+        nnoremap <silent><buffer><expr> yy
+                                \ defx#do_action('yank_path')
+        nnoremap <silent><buffer><expr> .
+                                \ defx#do_action('toggle_ignored_files')
+        nnoremap <silent><buffer><expr> ;
+                                \ defx#do_action('repeat')
+        nnoremap <silent><buffer><expr> -
+                                \ defx#do_action('cd', ['..'])
+        nnoremap <silent><buffer><expr> ~
+                                \ defx#do_action('cd')
+        nnoremap <silent><buffer><expr> q
+                                \ defx#do_action('quit')
+        nnoremap <silent><buffer><expr> <Space>
+                                \ defx#do_action('toggle_select') . 'j'
+        nnoremap <silent><buffer><expr> *
+                                \ defx#do_action('toggle_select_all')
+        nnoremap <silent><buffer><expr> j
+                                \ line('.') == line('$') ? 'gg' : 'j'
+        nnoremap <silent><buffer><expr> k
+                                \ line('.') == 1 ? 'G' : 'k'
+        nnoremap <silent><buffer><expr> <C-l>
+                                \ defx#do_action('redraw')
+        nnoremap <silent><buffer><expr> <C-g>
+                                \ defx#do_action('print')
+        nnoremap <silent><buffer><expr> cd
+                                \ defx#do_action('change_vim_cwd')
+endfunction
 
 " ultisnips
 " let g:UltiSnipsExpandTrigger = '<TAB>'
@@ -308,6 +389,8 @@ endif
 
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
+set foldlevel=1
+set foldnestmax=2
 
 
 " add this to avoid delay from sql, text file
