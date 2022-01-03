@@ -100,8 +100,8 @@ prompt pure
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-export LANG="zh_TW.UTF-8"
-export LC_ALL="zh_TW.UTF-8"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -121,6 +121,8 @@ export LC_ALL="zh_TW.UTF-8"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+# Mac arm brew
+alias brew='arch -arm64 brew'
 # cd
 alias projapi='cd ~/Owlting/Projects/ERP_api'
 alias ..2='cd ../..'
@@ -138,3 +140,10 @@ alias vim="nvim"
 alias vimdiff='nvim -d'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+

@@ -1,4 +1,4 @@
-" 自用的 vim 配置文件。:
+" Mark Huang :
 " widows/linux 下的 Gvim8;
 " macOS 下的 macvim 和 vim8
 "
@@ -7,6 +7,7 @@
 "==============================================================================
 
 syntax on
+set termguicolors
 set pyxversion=3
 set path+=**
 set clipboard=unnamed " 讓os跟vim的clipboard 共用
@@ -55,7 +56,7 @@ nnoremap <leader>w :w<CR>
 nnoremap j gj
 nnoremap k gk
 set scrolloff=3
-set sidescrolloff=5
+set sidescrolloff=9
 " Use spaces instead to tabs
 set expandtab
 " Ignore case when searching
@@ -68,7 +69,7 @@ set encoding=utf-8  " The encoding displayed.
 set fileencoding=utf-8  " The encoding written to file.
 " set tags=tags,tags.vendor
 set bg=dark
-set completeopt-=preview
+set completeopt=menu,menuone,noselect
 
 "==============================================================================
 "========================== Third plugins
@@ -80,10 +81,10 @@ call plug#begin('~/.vim/plugged')
 Plug 'airblade/vim-gitgutter'
 Plug 'akinsho/bufferline.nvim'
 Plug 'hoob3rt/lualine.nvim'
-" Plug 'nvim-lua/plenary.nvim'
-" Plug 'lewis6991/gitsigns.nvim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'github/copilot.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'vim-test/vim-test'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -91,19 +92,20 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-commentary'
-" Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-vinegar'
 Plug 'kshenoy/vim-signature'
 Plug 'blueyed/smarty.vim'
-" Plug 'arcticicestudio/nord-vim'
 Plug 'shaunsingh/nord.nvim'
-Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'
 
-" Use release branch (Recommend)
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neovim/nvim-lspconfig'
-Plug 'kabouzeid/nvim-lspinstall'
+Plug 'williamboman/nvim-lsp-installer'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
 
 " js plugins
 " Plug 'posva/vim-vue'
@@ -161,13 +163,62 @@ local on_attach = function(client, bufnr)
 
 end
 
-require'lspinstall'.setup()
+  -- Setup nvim-cmp.
+local cmp = require'cmp'
+
+cmp.setup({
+    documentation = {
+        maxheight = 10
+    },
+    snippet = {
+      expand = function(args)
+        -- For `vsnip` user.
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` user.
+
+        -- For `luasnip` user.
+        -- require('luasnip').lsp_expand(args.body)
+
+        -- For `ultisnips` user.
+        -- vim.fn["UltiSnips#Anon"](args.body)
+      end,
+    },
+    mapping = {
+      ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+      ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.close(),
+      ['<CR>'] = cmp.mapping.confirm({
+          behavior = cmp.ConfirmBehavior.Replace,
+          select = true,
+      }),
+      -- ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' })
+    },
+    sources = {
+      { name = 'nvim_lsp' },
+
+      -- For vsnip user.
+      { name = 'vsnip' },
+
+      -- For luasnip user.
+      -- { name = 'luasnip' },
+
+      -- For ultisnips user.
+      -- { name = 'ultisnips' },
+
+      { name = 'buffer' },
+    }
+  })
+
+local lsp_installer = require("nvim-lsp-installer")
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local servers = { "intelephense", "tsserver" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
+    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
     on_attach = on_attach,
     flags = {
       debounce_text_changes = 150,
@@ -187,16 +238,30 @@ let g:netrw_fastbrowse = 0 " close buffer when open file
 autocmd FileType netrw setl bufhidden=delete
 let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 let g:netrw_localcopydircmd = 'cp -r'
+let g:netrw_altv=1
 let g:netrw_sizestyle = 'h'
 hi! link netrwMarkFile Search
-" nnoremap <leader>eo :Explore<CR> " Explore file current directory
-" nnoremap <leader>el :ex.<CR> " Explore project directory list
+" rmdir 
+function! s:rmdir()
+  if input('delete '.fnamemodify(bufname(''),':p').getline('.').' ? (y/n)') ==# 'y'
+    if !delete(fnamemodify(bufname(''),':p').getline('.'),'rf')
+      if search('^\.\/$','Wb')
+        exe "norm \<cr>"
+      endif
+    endif
+  endif
+endfunction
+command! Rmnetrw call <SID>rmdir()
+nnoremap <leader>eo :Explore<CR> " Explore file current directory
+nnoremap <leader>el :ex.<CR> " Explore project directory list
 
 " Vim-commentary
 autocmd FileType php setlocal commentstring=//\ %s
 
 " Vim-Test
-let g:test#php#phpunit#executable = 'docker exec suitecrm_suitecrm_1 ./vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist --stop-on-failure'
+let g:test#php#phpunit#executable = 'docker exec suitecrm-suitecrm-1 ./vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist --stop-on-failure'
+
+"let g:test#php#phpunit#executable = 'docker exec erp_api_erp_api_1 php artisan test'
 " these "Ctrl mappings" work well when Caps Lock is mapped to Ctrl
 " nmap <silent> t<C-n> :TestNearest<CR>
 nmap <leader>tf :TestFile<CR>
@@ -228,6 +293,12 @@ endfunction
 nnoremap <silent> <Leader>p :Files<CR>
 nnoremap <silent> <Leader>b :Buffers<CR>
 
+" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" let g:fzf_layout = { 'down': '40%' }
 " Pass an empty option dictionary if the screen is narrow
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, &columns > 120 ? fzf#vim#with_preview() : {}, <bang>0)
@@ -244,6 +315,14 @@ command! -bang -nargs=* Rg
   \   <bang>0)
 nnoremap <silent> <Leader>R :Rg<CR>
 
+" telescope
+
+" Find files using Telescope command-line sugar.
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
 " Automatically removing all trailing whitespace
 " autocmd BufWritePre * %s/\s\+$//e
 
@@ -252,6 +331,9 @@ nnoremap <silent> <Leader>R :Rg<CR>
 vmap <Leader>al <Plug>(EasyAlign)
 nmap <Leader>al <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48:2;%lu;%lu;%lum"
 
 if !exists('g:easy_align_delimiters')
   let g:easy_align_delimiters = {}
@@ -274,7 +356,10 @@ function! XTermPasteBegin()
 endfunction
 " end fixed
 
-
+let g:copilot_filetypes = {
+      \ '*': v:false,
+      \ 'php': v:true,
+      \ }
 
 " Emacs and bash style insert mode CTRL shortcuts
 " <C-a> = Move to start of the line; like in vim command mode: c_ctrl-b; To insert previously inserted text, use <C-r>. or <Alt-.> (below)
@@ -294,96 +379,12 @@ inoremap <C-f> <Right>
 " Vim-fugitive
 nnoremap <leader>gb :Git blame<CR>
 nnoremap <leader>gs :Git<CR>
-nnoremap <leader>gl :Gclog -10 -- %<CR>
-
-" Defx
-nnoremap <leader>eo :Defx `escape(expand('%:p:h'), ' :')` -search=`expand('%:p')`<CR> " Explore file current directory
-nnoremap <leader>el :Defx -new<CR> " Explore project directory list
-" This make defx works like vinegar plugins
-nnoremap - :Defx `escape(expand('%:p:h'), ' :')` -search=`expand('%:p')` -new<CR> " Explore file current directory
-
-autocmd FileType defx call s:defx_my_settings()
-function! s:defx_my_settings() abort
-        " Define mappings
-        nnoremap <silent><buffer><expr> <CR>
-                                \ defx#do_action('open')
-        nnoremap <silent><buffer><expr> c
-                                \ defx#do_action('copy')
-        nnoremap <silent><buffer><expr> m
-                                \ defx#do_action('move')
-        nnoremap <silent><buffer><expr> p
-                                \ defx#do_action('paste')
-        nnoremap <silent><buffer><expr> h
-                                \ defx#do_action('close_tree')
-        nnoremap <silent><buffer><expr> l
-                                \ defx#do_action('open_tree')
-        nnoremap <silent><buffer><expr> E
-                                \ defx#do_action('open', 'vsplit')
-        nnoremap <silent><buffer><expr> P
-                                \ defx#do_action('preview')
-        nnoremap <silent><buffer><expr> o
-                                \ defx#do_action('open_tree', 'toggle')
-        nnoremap <silent><buffer><expr> K
-                                \ defx#do_action('new_directory')
-        nnoremap <silent><buffer><expr> %
-                                \ defx#do_action('new_file')
-        nnoremap <silent><buffer><expr> C
-                                \ defx#do_action('toggle_columns',
-                                \                'mark:indent:icon:filename:type:size:time')
-        nnoremap <silent><buffer><expr> S
-                                \ defx#do_action('toggle_sort', 'time')
-        nnoremap <silent><buffer><expr> D
-                                \ defx#do_action('remove')
-        nnoremap <silent><buffer><expr> r
-                                \ defx#do_action('rename')
-        nnoremap <silent><buffer><expr> !
-                                \ defx#do_action('execute_command')
-        nnoremap <silent><buffer><expr> x
-                                \ defx#do_action('execute_system')
-        nnoremap <silent><buffer><expr> yy
-                                \ defx#do_action('yank_path')
-        nnoremap <silent><buffer><expr> .
-                                \ defx#do_action('toggle_ignored_files')
-        nnoremap <silent><buffer><expr> ;
-                                \ defx#do_action('repeat')
-        nnoremap <silent><buffer><expr> -
-                                \ defx#do_action('cd', ['..'])
-        nnoremap <silent><buffer><expr> ~
-                                \ defx#do_action('cd')
-        nnoremap <silent><buffer><expr> q
-                                \ defx#do_action('quit')
-        nnoremap <silent><buffer><expr> <Space>
-                                \ defx#do_action('toggle_select') . 'j'
-        nnoremap <silent><buffer><expr> *
-                                \ defx#do_action('toggle_select_all')
-        nnoremap <silent><buffer><expr> j
-                                \ line('.') == line('$') ? 'gg' : 'j'
-        nnoremap <silent><buffer><expr> k
-                                \ line('.') == 1 ? 'G' : 'k'
-        nnoremap <silent><buffer><expr> <C-l>
-                                \ defx#do_action('redraw')
-        nnoremap <silent><buffer><expr> <C-g>
-                                \ defx#do_action('print')
-        nnoremap <silent><buffer><expr> cd
-                                \ defx#do_action('change_vim_cwd')
-endfunction
 
 " ultisnips
 " let g:UltiSnipsExpandTrigger = '<TAB>'
 " let g:UltiSnipsListSnippets = '<Leader><TAB>'
 " let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 " let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
-
-if (empty($TMUX))
-  if (has("nvim"))
-    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-  endif
-
-  if (has("termguicolors"))
-    set termguicolors
-  endif
-endif
 
 " this sometimes will freeze the file
 
@@ -402,5 +403,25 @@ if ! has('gui_running')
         au InsertLeave * set timeoutlen=1000
     augroup END
 endif
+
+" Auto update plug every week
+function! OnVimEnter() abort
+  " Run PlugUpdate every week automatically when entering Vim.
+  if exists('g:plug_home')
+    let l:filename = printf('%s/.vim_plug_update', g:plug_home)
+    if filereadable(l:filename) == 0
+      call writefile([], l:filename)
+    endif
+
+    let l:this_week = strftime('%Y_%V')
+    let l:contents = readfile(l:filename)
+    if index(l:contents, l:this_week) < 0
+      call execute('PlugUpdate')
+      call writefile([l:this_week], l:filename, 'a')
+    endif
+  endif
+endfunction
+
+autocmd VimEnter * call OnVimEnter()
 
 colorscheme nord
