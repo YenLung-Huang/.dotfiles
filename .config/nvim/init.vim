@@ -78,24 +78,28 @@ set completeopt=menu,menuone,noselect
 call plug#begin('~/.vim/plugged')
 " Enhanced plugins
 " Plug 'mhinz/vim-signify'
-Plug 'airblade/vim-gitgutter'
+"Plug 'airblade/vim-gitgutter'
+Plug 'lewis6991/gitsigns.nvim'
 Plug 'akinsho/bufferline.nvim'
 Plug 'hoob3rt/lualine.nvim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'github/copilot.vim'
+Plug 'chrisbra/unicode.vim'
+"Plug 'github/copilot.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'vim-test/vim-test'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-vinegar'
 Plug 'kshenoy/vim-signature'
 Plug 'blueyed/smarty.vim'
 Plug 'shaunsingh/nord.nvim'
+Plug 'sainnhe/sonokai'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'
 
@@ -105,7 +109,10 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-vsnip'
+Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 Plug 'hrsh7th/vim-vsnip'
+Plug 'onsails/lspkind-nvim'
+Plug 'ap/vim-css-color'
 
 " js plugins
 " Plug 'posva/vim-vue'
@@ -116,9 +123,24 @@ call plug#end()
 lua << EOF
 require('lspconfig').intelephense.setup{}
 require("bufferline").setup{}
+require('gitsigns').setup{
+  signs = {
+    add          = {hl = 'GitSignsAdd'   , text = '▏', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'},
+    change       = {hl = 'GitSignsChange', text = '▏', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn'},
+  },
+  keymaps = {
+    -- Default keymap options
+    noremap = true,
+
+    ['n ]h'] = { expr = true, "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'"},
+    ['n [h'] = { expr = true, "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'"},
+  }
+}  
 require('lualine').setup {
   options = {
-    theme = 'nord'
+    theme = 'sonokai',
+    component_separators = { left = '╲', right = '╲'},
+    section_separators = { left = '', right = ''},
   }
 }
 
@@ -165,7 +187,14 @@ end
 
   -- Setup nvim-cmp.
 local cmp = require'cmp'
-
+local lspkind = require('lspkind')
+local source_mapping = {
+  buffer = "[Buffer]",
+  nvim_lsp = "[LSP]",
+  nvim_lua = "[Lua]",
+  cmp_tabnine = "[TN]",
+  path = "[Path]",
+}
 cmp.setup({
     documentation = {
         maxheight = 10
@@ -194,8 +223,28 @@ cmp.setup({
           select = true,
       }),
       -- ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' })
+      ['<Tab>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif luasnip.expand_or_jumpable() then
+          luasnip.expand_or_jump()
+        else
+          fallback()
+        end
+      end,
+      ['<S-Tab>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif luasnip.jumpable(-1) then
+          luasnip.jump(-1)
+        else
+          fallback()
+        end
+      end,
     },
     sources = {
+      { name = 'cmp_tabnine' },
+
       { name = 'nvim_lsp' },
 
       -- For vsnip user.
@@ -208,8 +257,23 @@ cmp.setup({
       -- { name = 'ultisnips' },
 
       { name = 'buffer' },
-    }
-  })
+    },
+    formatting = {
+      format = function(entry, vim_item)
+          vim_item.kind = lspkind.presets.default[vim_item.kind]
+          local menu = source_mapping[entry.source.name]
+
+          if entry.source.name == 'cmp_tabnine' then
+            if entry.completion_item.data ~= nil and entry.completion_item.data.detail ~= nil then
+              menu = entry.completion_item.data.detail .. ' ' .. menu
+            end
+              vim_item.kind = ''
+          end
+          vim_item.menu = menu
+          return vim_item
+        end
+      },
+})
 
 local lsp_installer = require("nvim-lsp-installer")
 
@@ -356,10 +420,10 @@ function! XTermPasteBegin()
 endfunction
 " end fixed
 
-let g:copilot_filetypes = {
-      \ '*': v:false,
-      \ 'php': v:true,
-      \ }
+" let g:copilot_filetypes = {
+"       \ '*': v:false,
+"       \ 'php': v:true,
+"       \ }
 
 " Emacs and bash style insert mode CTRL shortcuts
 " <C-a> = Move to start of the line; like in vim command mode: c_ctrl-b; To insert previously inserted text, use <C-r>. or <Alt-.> (below)
@@ -424,4 +488,8 @@ endfunction
 
 autocmd VimEnter * call OnVimEnter()
 
-colorscheme nord
+let g:sonokai_style = 'maia'
+let g:sonokai_enable_italic = 1
+let g:sonokai_better_performance = 1
+
+colorscheme sonokai
