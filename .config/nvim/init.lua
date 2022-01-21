@@ -1,0 +1,7 @@
+require('plugins')
+require('settings')
+require('mappings')
+require('lsp-config')
+require('lsp-installer')
+require('netrw')
+require('nvim-cmp')
