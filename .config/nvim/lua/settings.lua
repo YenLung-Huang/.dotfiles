@@ -103,5 +103,5 @@ vim.g.sonokai_style = 'maia'
 vim.g.sonokai_enable_italic = 1
 vim.g.sonokai_better_performance = 1
 
-vim.g.python3_host_prog = "/Users/grzegorz/.asdf/shims/python3"
-vim.g.python_host_prog = "/Users/grzegorz/.asdf/shims/python2"
+-- vim.g.python3_host_prog = "/Users/grzegorz/.asdf/shims/python3"
+-- vim.g.python_host_prog = "/Users/grzegorz/.asdf/shims/python2"

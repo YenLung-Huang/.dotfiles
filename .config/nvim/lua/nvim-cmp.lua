@@ -35,24 +35,24 @@ cmp.setup({
           select = true,
       }),
       -- ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' })
-      ['<Tab>'] = function(fallback)
-        if cmp.visible() then
-          cmp.select_next_item()
-        elseif luasnip.expand_or_jumpable() then
-          luasnip.expand_or_jump()
-        else
-          fallback()
-        end
-      end,
-      ['<S-Tab>'] = function(fallback)
-        if cmp.visible() then
-          cmp.select_prev_item()
-        elseif luasnip.jumpable(-1) then
-          luasnip.jump(-1)
-        else
-          fallback()
-        end
-      end,
+       -- ['<Tab>'] = function(fallback)
+         -- if cmp.visible() then
+           -- cmp.select_next_item()
+         -- elseif luasnip.expand_or_jumpable() then
+           -- luasnip.expand_or_jump()
+         -- else
+           -- fallback()
+         -- end
+       -- end,
+       -- ['<S-Tab>'] = function(fallback)
+         -- if cmp.visible() then
+           -- cmp.select_prev_item()
+         -- elseif luasnip.jumpable(-1) then
+           -- luasnip.jump(-1)
+         -- else
+           -- fallback()
+         -- end
+      -- end,
     },
     sources = {
       { name = 'cmp_tabnine' },

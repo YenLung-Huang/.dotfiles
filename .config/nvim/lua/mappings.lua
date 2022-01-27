@@ -31,8 +31,10 @@ nmap('<leader>w', ':w<cr>')
 nmap('/', '/\\v')
 vmap('/', '/\\v')
 
+nmap('<c-l>', ':nohlsearch<cr>')
+
 -- don't jump when using *
-nmap('*', '*<c-o>')
+nmap('*', '*``')
 
 -- keep search matches in the middle of the window
 nmap('n', 'nzzzv')
@@ -52,10 +54,10 @@ vmap('j', 'gj')
 vmap('k', 'gk')
 
 -- Easy buffer navigation
-nmap('<C-h>', '<C-w>h')
-nmap('<C-j>', '<C-w>j')
-nmap('<C-k>', '<C-w>k')
-nmap('<C-l>', '<C-w>l')
+-- nmap('<C-h>', '<C-w>h')
+-- nmap('<C-j>', '<C-w>j')
+-- nmap('<C-k>', '<C-w>k')
+-- nmap('<C-l>', '<C-w>l')
 
 -- Reselect visual block after indent/outdent
 vmap('<', '<gv')
@@ -67,21 +69,26 @@ cmap('<C-e>', '<End>')
 cmap('<C-b>', '<Left>') -- Move one character backward; the opposite of <C-f>
 cmap('<C-f>', '<Right>')
 cmap('<C-d>', '<Delete>')
+imap('<C-a>', '<Home>')
+imap('<C-e>', '<End>')
+imap('<C-b>', '<Left>') -- Move one character backward; the opposite of <C-f>
+imap('<C-f>', '<Right>')
+imap('<C-d>', '<Delete>')
 
 -- Terminal
 -- ESC to go to normal mode in terminal
 tmap('<C-s>', '<C-\\><C-n>')
 tmap('<Esc><Esc>', '<C-\\><C-n>')
 
--- window split; 
+-- window split;
 vim.o.splitbelow = true -- when splitting horizontally, move coursor to lower pane
 vim.o.splitright = true -- when splitting vertically, mnove coursor to right pane
 
 -- PLUGINS
 
 -- Find files using Telescope command-line sugar.
-nmap("<C-p>", "<cmd>Telescope find_files<cr>")
-nmap("<leader>f", "<cmd>Telescope live_grep<cr>")
+nmap("<leader>p", "<cmd>Telescope find_files<cr>")
+nmap("<leader>R", "<cmd>Telescope live_grep<cr>")
 nmap("<leader>bb", "<cmd>Telescope buffers<cr>")
 nmap("<leader>hh", "<cmd>Telescope help_tags<cr>")
 
@@ -90,12 +97,28 @@ nmap('K', '<cmd>Lspsaga hover_doc<cr>')
 imap('<C-k>', '<cmd>Lspsaga hover_doc<cr>')
 nmap('gh', '<cmd>Lspsaga lsp_finder<cr>')
 nmap('<C-e>', '<cmd>Lspsaga show_line_diagnostics<CR>')
+nmap('gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
+nmap('gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
+nmap('K', '<cmd>lua vim.lsp.buf.hover()<CR>')
+nmap('gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+nmap('<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+nmap('<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
+nmap('<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
+nmap('<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
+nmap('<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+nmap('<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
+nmap('<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+nmap('gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+nmap('<space>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>')
+nmap('[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
+nmap(']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
+nmap('<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>')
+nmap('<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
 
--- git
-nmap(']h', '<cmd>GitMessenger<cr>')
-nmap('[h', '<cmd>GitMessenger<cr>')
+-- Git
 nmap('<leader>gb', ':Git blame<cr>')
-nmap('<leader>gs', ':Git<cr>')
+nmap('<leader>gd', ':Gvdiffsplit<cr>')
+nmap('<leader>gs', ':topleft Git<cr>')
 
 -- netrw
 nmap('<leader>eo', ':Explore<cr>'); -- explore file current directory
