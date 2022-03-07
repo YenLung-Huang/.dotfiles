@@ -34,7 +34,7 @@ vmap('/', '/\\v')
 nmap('<c-l>', ':nohlsearch<cr>')
 
 -- don't jump when using *
-nmap('*', '*``')
+nmap('*', 'yiw<Esc>: let @/ = @""<cr> :set hls<cr>')
 
 -- keep search matches in the middle of the window
 nmap('n', 'nzzzv')
@@ -93,6 +93,8 @@ nmap("<leader>bb", "<cmd>Telescope buffers<cr>")
 nmap("<leader>hh", "<cmd>Telescope help_tags<cr>")
 
 -- LSP
+vim.api.omnifunc = 'lua.vim.lsp.omnifunc'
+
 nmap('K', '<cmd>Lspsaga hover_doc<cr>')
 imap('<C-k>', '<cmd>Lspsaga hover_doc<cr>')
 nmap('gh', '<cmd>Lspsaga lsp_finder<cr>')
@@ -102,9 +104,9 @@ nmap('gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
 nmap('K', '<cmd>lua vim.lsp.buf.hover()<CR>')
 nmap('gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
 nmap('<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-nmap('<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
-nmap('<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
-nmap('<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
+-- nmap('<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
+-- nmap('<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
+-- nmap('<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
 nmap('<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
 nmap('<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
 nmap('<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')

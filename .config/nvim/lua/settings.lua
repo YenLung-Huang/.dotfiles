@@ -33,12 +33,13 @@ vim.o.synmaxcol = 300 -- stop syntax highlight after x lines for performance
 vim.o.laststatus = 2 -- always show status line
 
 vim.o.list = false -- do not display white characters
-vim.o.foldenable = false
-vim.o.foldlevel = 4 -- limit folding to 4 levels
--- vim.o.foldmethod = expr -- use language syntax to generate folds
--- vim.o.foldexpr = nvim_treesitter#foldexpr()
-vim.o.foldlevel = 1
+vim.wo.foldenable = true -- can be enabled directly in opened file - using 'zi' - toogle fold
+vim.o.foldlevelstart=1
+vim.o.foldlevel = 1 -- limit folding to 4 levels
+vim.o.foldminlines = 1
 vim.o.foldnestmax = 2
+vim.wo.foldmethod = 'expr' -- use language syntax to generate folds
+vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.o.wrap = false --do not wrap lines even if very long
 vim.o.eol = false -- show if there's no eol char
 vim.o.showbreak= '↪' -- character to show when line is broken
@@ -51,6 +52,7 @@ vim.o.modelines = 0
 vim.o.showcmd = true -- display command in bottom bar
 
 -- Search
+vim.o.grepprg = 'rg --vimgrep --no-heading --smart-case'
 vim.o.incsearch = true -- starts searching as soon as typing, without enter needed
 vim.o.ignorecase = true -- ignore letter case when searching
 vim.o.smartcase = true -- case insentive unless capitals used in search
