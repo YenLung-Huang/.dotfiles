@@ -8,6 +8,7 @@ local source_mapping = {
   path = "[Path]",
 }
 cmp.setup({
+    autocomplete = true,
     documentation = {
         maxheight = 10
     },
@@ -32,7 +33,7 @@ cmp.setup({
       ['<C-e>'] = cmp.mapping.close(),
       ['<CR>'] = cmp.mapping.confirm({
           behavior = cmp.ConfirmBehavior.Replace,
-          select = true,
+          select = false,
       }),
       -- ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' })
        -- ['<Tab>'] = function(fallback)
@@ -86,3 +87,8 @@ cmp.setup({
         end
       },
 })
+
+-- vim.cmd([[
+--   inoremap <C-x><C-o> <Cmd>lua vimrc.cmp.lsp()<CR>
+--   inoremap <C-x><C-s> <Cmd>lua vimrc.cmp.snippet()<CR>
+-- ]])
