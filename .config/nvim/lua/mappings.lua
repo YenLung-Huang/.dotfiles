@@ -20,6 +20,10 @@ function cmap(shortcut, command)
   map('c', shortcut, command)
 end
 
+function xmap(shortcut, command)
+  map('x', shortcut, command)
+end
+
 function tmap(shortcut, command)
   map('t', shortcut, command)
 end
@@ -118,10 +122,14 @@ nmap('<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>')
 nmap('<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
 
 -- Git
-nmap('<leader>gb', ':Git blame<cr>')
+nmap('<leader>gb', ':Git blame A<cr>')
 nmap('<leader>gd', ':Gvdiffsplit<cr>')
 nmap('<leader>gs', ':topleft Git<cr>')
 
 -- netrw
 nmap('<leader>eo', ':Explore<cr>'); -- explore file current directory
 nmap('<leader>el', ':ex.<cr>'); -- explore project directory list
+
+-- easy align
+nmap('<leader>al', ':EasyAlign<cr>')
+xmap('<leader>al', ':EasyAlign<cr>')
