@@ -68,7 +68,8 @@ vim.cmd([[
 vim.g["test#preserve_screen"] = 1
 vim.g.neoterm_autoscroll = 1 -- always scroll to the end of the command output
 
-vim.g['test#php#phpunit#executable'] = 'docker exec suitecrm-suitecrm-1 ./vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist --stop-on-failure'
+-- vim.g['test#php#phpunit#executable'] = 'docker exec suitecrm-suitecrm-1 ./vendor/bin/phpunit --configuration ./tests/phpunit.xml.dist --stop-on-failure'
+vim.g['test#php#phpunit#executable'] = 'docker exec erp_api-erp_api-1 ./vendor/bin/phpunit'
 
 -- mappings
 nmap('<leader>tn', ':TestNearest<CR>')

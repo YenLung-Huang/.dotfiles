@@ -9,8 +9,9 @@ local source_mapping = {
 }
 cmp.setup({
     autocomplete = true,
-    documentation = {
-        maxheight = 10
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
     },
     snippet = {
       expand = function(args)

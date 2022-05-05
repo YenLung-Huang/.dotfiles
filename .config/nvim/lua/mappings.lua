@@ -79,6 +79,9 @@ imap('<C-b>', '<Left>') -- Move one character backward; the opposite of <C-f>
 imap('<C-f>', '<Right>')
 imap('<C-d>', '<Delete>')
 
+-- map c-c to esc
+-- imap('<C-c>', '<Esc>')
+
 -- Terminal
 -- ESC to go to normal mode in terminal
 tmap('<C-s>', '<C-\\><C-n>')
@@ -86,7 +89,7 @@ tmap('<Esc><Esc>', '<C-\\><C-n>')
 
 -- window split;
 vim.o.splitbelow = true -- when splitting horizontally, move coursor to lower pane
-vim.o.splitright = true -- when splitting vertically, mnove coursor to right pane
+vim.o.splitright = true -- when splitting vertically, move coursor to right pane
 
 -- PLUGINS
 
@@ -97,7 +100,7 @@ nmap("<leader>bb", "<cmd>Telescope buffers<cr>")
 nmap("<leader>hh", "<cmd>Telescope help_tags<cr>")
 
 -- LSP
-vim.api.omnifunc = 'lua.vim.lsp.omnifunc'
+vim.api.omnifunc = 'v:lua.vim.lsp.omnifunc'
 
 nmap('K', '<cmd>Lspsaga hover_doc<cr>')
 imap('<C-k>', '<cmd>Lspsaga hover_doc<cr>')
@@ -122,7 +125,7 @@ nmap('<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>')
 nmap('<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
 
 -- Git
-nmap('<leader>gb', ':Git blame A<cr>')
+nmap('<leader>gb', ':Git blame<cr>')
 nmap('<leader>gd', ':Gvdiffsplit<cr>')
 nmap('<leader>gs', ':topleft Git<cr>')
 

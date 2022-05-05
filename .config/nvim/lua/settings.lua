@@ -8,6 +8,7 @@ HOME = os.getenv("HOME")
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = '-'
+vim.g.fugitive_dynamic_colors = 0
 
 -- basic settings
 vim.o.termguicolors = true
@@ -89,21 +90,23 @@ vim.o.wildmenu = true -- on TAB, complete options for system command
 vim.o.wildignore = 'deps,.svn,CVS,.git,.hg,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,.DS_Store,*.aux,*.out,*.toc'
 
 -- Only show cursorline in the current window and in normal mode.
+vim.o.cursorcolumn = true
+vim.o.cursorline = true
 vim.cmd([[
   augroup cline
       au!
-      au WinLeave * set nocursorline
-      au WinEnter * set cursorline
-      au InsertEnter * set nocursorline
-      au InsertLeave * set cursorline
+      au WinLeave * set nocursorline nocursorcolumn
+		  au WinEnter * set cursorline cursorcolumn
+      au InsertEnter * set nocursorline nocursorcolumn
+		  au InsertLeave * set cursorline cursorcolumn
   augroup END
 ]])
 
 vim.o.background = 'dark'
-vim.cmd('colorscheme sonokai')
 vim.g.sonokai_style = 'maia'
 vim.g.sonokai_enable_italic = 1
 vim.g.sonokai_better_performance = 1
+vim.cmd 'colorscheme sonokai'
 
 -- vim.g.python3_host_prog = "/Users/grzegorz/.asdf/shims/python3"
 -- vim.g.python_host_prog = "/Users/grzegorz/.asdf/shims/python2"
