@@ -1,3 +1,4 @@
 .config/coc/
 .config/configstore/
 .config/psysh/
+.config/nvim/.luarc.json

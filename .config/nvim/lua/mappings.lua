@@ -1,5 +1,11 @@
-vim.cmd('noremap <C-b> :noh<cr>:call clearmatches()<cr>') -- clear matches Ctrl+b
+-- [[ Basic Keymaps ]]
+-- Set <space> as the leader key
+-- See `:help mapleader`
+--  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 
+-- Keymaps helper
 function map(mode, shortcut, command)
   vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true })
 end
@@ -27,6 +33,28 @@ end
 function tmap(shortcut, command)
   map('t', shortcut, command)
 end
+
+-- Keymaps for better default experience
+-- See `:help vim.keymap.set()`
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+
+-- Remap for dealing with word wrap
+vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
+-- [[ Highlight on yank ]]
+-- See `:help vim.highlight.on_yank()`
+local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+  group = highlight_group,
+  pattern = '*',
+})
+
+-- clear matches Ctrl+b
+nmap('<C-b>', ':noh<cr>:call clearmatches()<cr>')
 
 -- quick save file, exit file
 nmap('<leader>w', ':w<cr>')
@@ -122,7 +150,7 @@ nmap('<space>e', '<cmd>lua vim.diagnostic.show_line_diagnostics()<CR>')
 nmap('[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>')
 nmap(']d', '<cmd>lua vim.diagnostic.goto_next()<CR>')
 nmap('<space>q', '<cmd>lua vim.diagnostic.set_loclist()<CR>')
-nmap('<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>')
+nmap('<space>f', '<cmd>lua vim.lsp.buf.format()<CR>')
 
 -- Git
 nmap('<leader>gb', ':Git blame<cr>')

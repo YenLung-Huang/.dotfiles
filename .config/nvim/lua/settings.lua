@@ -1,22 +1,32 @@
+-- [[ Setting options ]]
+-- See `:help vim.o`
+
 HOME = os.getenv("HOME")
 
--- not find
--- syntax on
--- set termguicolors
--- set path+=**
--- set clipboard=unnamed -- 讓os跟vim的clipboard 共用
+-- Set highlight on search
+vim.o.hlsearch = false
 
-vim.g.mapleader = ' '
-vim.g.maplocalleader = '-'
-vim.g.fugitive_dynamic_colors = 0
+-- Make line numbers default
+vim.wo.number = true
+
+-- Enable mouse mode
+vim.o.mouse = 'a'
+
+-- Enable break indent
+vim.o.breakindent = true
 
 -- basic settings
-vim.o.termguicolors = true
 vim.o.clipboard = 'unnamed'
 vim.o.encoding = "utf-8"
 vim.o.fileencoding = 'utf-8'
 vim.o.backspace = "indent,eol,start" -- backspace works on every char in insert mode
+
+-- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
+
+-- Save undo history
+vim.o.undofile = true
+
 vim.o.history = 1000
 vim.o.dictionary = '/usr/share/dict/words'
 vim.o.startofline = true
@@ -34,8 +44,8 @@ vim.o.synmaxcol = 300 -- stop syntax highlight after x lines for performance
 vim.o.laststatus = 2 -- always show status line
 
 vim.o.list = false -- do not display white characters
-vim.wo.foldenable = true -- can be enabled directly in opened file - using 'zi' - toogle fold
-vim.o.foldlevelstart=1
+vim.wo.foldenable = false -- can be enabled directly in opened file - using 'zi' - toogle fold
+vim.o.foldlevelstart = 1
 vim.o.foldlevel = 1 -- limit folding to 4 levels
 vim.o.foldminlines = 1
 vim.o.foldnestmax = 2
@@ -48,20 +58,27 @@ vim.o.showbreak= '↪' -- character to show when line is broken
 vim.o.number = true -- line number on the left
 vim.o.relativenumber = true
 vim.o.numberwidth = 3 -- always reserve 3 spaces for line number
+
+-- Decrease update time
+vim.o.updatetime = 250
 vim.o.signcolumn = 'yes' -- keep 1 column for coc.vim  check
+
 vim.o.modelines = 0
 vim.o.showcmd = true -- display command in bottom bar
 
 -- Search
 vim.o.grepprg = 'rg --vimgrep --no-heading --smart-case'
 vim.o.incsearch = true -- starts searching as soon as typing, without enter needed
+
 vim.o.ignorecase = true -- ignore letter case when searching
 vim.o.smartcase = true -- case insentive unless capitals used in search
 
+-- Case insensitive searching UNLESS /C or capital in search
 vim.o.matchtime = 2 -- delay before showing matching paren
 vim.o.mps = vim.o.mps .. ",<:>"
 
 -- White characters
+vim.o.indentexpr = false
 vim.o.autoindent = true
 vim.o.smartindent = true
 vim.o.tabstop = 2 -- 1 tab = 2 spaces
@@ -102,11 +119,10 @@ vim.cmd([[
   augroup END
 ]])
 
+-- Set colorscheme
+vim.o.termguicolors = true
 vim.o.background = 'dark'
 vim.g.sonokai_style = 'maia'
 vim.g.sonokai_enable_italic = 1
 vim.g.sonokai_better_performance = 1
-vim.cmd 'colorscheme sonokai'
-
--- vim.g.python3_host_prog = "/Users/grzegorz/.asdf/shims/python3"
--- vim.g.python_host_prog = "/Users/grzegorz/.asdf/shims/python2"
+vim.cmd [[colorscheme sonokai]]
