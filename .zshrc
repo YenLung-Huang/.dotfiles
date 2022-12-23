@@ -21,6 +21,7 @@ export EDITOR="nvim"
 # composer bin
 # export PATH=~/.composer/vendor/bin:$PATH
 alias "composer"="php /usr/local/bin/composer"
+export PATH="$PATH:$HOME/.composer/vendor/bin"
 
 export LDFLAGS="-L/usr/local/opt/libffi/lib"
 export CPPFLAGS="-I/usr/local/opt/libffi/include"

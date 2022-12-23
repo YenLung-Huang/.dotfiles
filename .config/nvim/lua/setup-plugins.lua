@@ -61,6 +61,24 @@ require('gitsigns').setup {
     changedelete = { text = '~' },
   },
 }
+-- Navigation
+vim.keymap.set('n', ']h', '<cmd>Gitsigns next_hunk<CR>')
+vim.keymap.set('n', '[h', '<cmd>Gitsigns prev_hunk<CR>')
+
+-- Actions
+vim.keymap.set('n', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>')
+vim.keymap.set('v', '<leader>hs', '<cmd>Gitsigns stage_hunk<CR>')
+vim.keymap.set('n', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>')
+vim.keymap.set('v', '<leader>hr', '<cmd>Gitsigns reset_hunk<CR>')
+vim.keymap.set('n', '<leader>hS', '<cmd>Gitsigns stage_buffer<CR>')
+vim.keymap.set('n', '<leader>hu', '<cmd>Gitsigns undo_stage_hunk<CR>')
+vim.keymap.set('n', '<leader>hR', '<cmd>Gitsigns reset_buffer<CR>')
+vim.keymap.set('n', '<leader>hp', '<cmd>Gitsigns preview_hunk<CR>')
+vim.keymap.set('n', '<leader>hb', '<cmd>lua require"gitsigns".blame_line{full=true}<CR>')
+vim.keymap.set('n', '<leader>tb', '<cmd>Gitsigns toggle_current_line_blame<CR>')
+vim.keymap.set('n', '<leader>hd', '<cmd>Gitsigns diffthis<CR>')
+vim.keymap.set('n', '<leader>hD', '<cmd>lua require"gitsigns".diffthis("~")<CR>')
+vim.keymap.set('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>')
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
