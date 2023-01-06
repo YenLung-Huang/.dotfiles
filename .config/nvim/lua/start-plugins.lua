@@ -11,6 +11,8 @@ require('packer').startup(function(use)
   -- Package manager
   use { 'wbthomason/packer.nvim' }
 
+  -- use { 'christoomey/vim-tmux-navigator' }
+
   use { -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     requires = {
