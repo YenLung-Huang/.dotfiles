@@ -2,3 +2,4 @@
 .config/configstore/
 .config/psysh/
 .config/nvim/.luarc.json
+.DS_Store
