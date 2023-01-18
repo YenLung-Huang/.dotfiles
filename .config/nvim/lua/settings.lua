@@ -94,14 +94,6 @@ vim.o.undodir = HOME .. '/.vim/tmp/undo//'     -- undo files
 vim.o.backupdir = HOME .. '/.vim/tmp/backup//' -- backups
 vim.o.directory = '/.vim/tmp/swap//'   -- swap files
 
-vim.cmd([[
-  au FileType python                  set ts=4 sw=4
-  au BufRead,BufNewFile *.md          set ft=mkd tw=80 syntax=markdown
-  au BufRead,BufNewFile *.ppmd        set ft=mkd tw=80 syntax=markdown
-  au BufRead,BufNewFile *.markdown    set ft=mkd tw=80 syntax=markdown
-  au BufRead,BufNewFile *.slimbars    set syntax=slim
-]])
-
 -- Commands mode
 vim.o.wildmenu = true -- on TAB, complete options for system command
 vim.o.wildignore = 'deps,.svn,CVS,.git,.hg,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,.DS_Store,*.aux,*.out,*.toc'
@@ -122,7 +114,8 @@ vim.cmd([[
 -- Set colorscheme
 vim.o.termguicolors = true
 vim.o.background = 'dark'
-vim.g.sonokai_style = 'maia'
+vim.g.sonokai_style = 'default'
+vim.g.sonokai_transparent_background = 1
 vim.g.sonokai_enable_italic = 1
 vim.g.sonokai_better_performance = 1
 vim.cmd [[colorscheme sonokai]]

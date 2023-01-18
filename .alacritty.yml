@@ -11,7 +11,7 @@ selection:
   save_to_clipboard: true
  
 window:
-  opacity: 0.85
+  opacity: 0.80
   dynamic_padding: false
 
 font:
@@ -26,15 +26,14 @@ font:
 draw_bold_text_with_bright_colors: true
 
 shell:
- program: /bin/zsh
- args:
-  - -c
-  - -l
-  - "tmux attach || tmux new -s Base"
-
+  program: /bin/zsh
+  args:
+    - -c
+    - -l
+    - "tmux attach || tmux new -s Base"
 
 mouse:
-  hide_when_typing: true
+  hide_when_typing: false
 
 key_bindings:
   # Rename the current tmux window
