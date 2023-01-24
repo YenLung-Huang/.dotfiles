@@ -41,7 +41,7 @@ vim.o.showmatch  = true -- show matching brackets
 vim.o.scrolloff = 3 -- always show 3 rows from edge of the screen
 vim.o.sidescrolloff = 9
 vim.o.synmaxcol = 300 -- stop syntax highlight after x lines for performance
-vim.o.laststatus = 2 -- always show status line
+vim.o.laststatus = 3 -- always and ONLY the last window
 
 vim.o.list = false -- do not display white characters
 vim.wo.foldenable = false -- can be enabled directly in opened file - using 'zi' - toogle fold
