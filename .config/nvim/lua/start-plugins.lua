@@ -69,7 +69,7 @@ require('packer').startup(function(use)
   use 'kshenoy/vim-signature' -- Hilight bookmark
   use 'rhysd/vim-grammarous' -- grammar check
   use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
-  use 'bronson/vim-trailing-whitespace' -- highlight trailing spaces
+  use 'ntpeters/vim-better-whitespace' -- highlight trailing spaces
   use 'tpope/vim-eunuch' -- wrappers UNIX commands
   use 'tpope/vim-surround' -- surround characters shortcuts
   use 'tpope/vim-vinegar' -- file browser

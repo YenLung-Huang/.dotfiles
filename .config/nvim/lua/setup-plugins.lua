@@ -4,6 +4,9 @@ require('lualine').setup {
   options = {
     theme = 'sonokai',
   },
+  sections = {
+    lualine_b = { 'branch', 'diff', 'diagnostics' },
+  }
 }
 
 -- Bufferline
@@ -228,7 +231,7 @@ local on_attach = function(_, bufnr)
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-  nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
+  -- nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
   -- nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
   -- nmap('<leader>wl', function()
   --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
@@ -255,7 +258,7 @@ local servers = {
   cssls = {},
   jsonls = {},
   intelephense = {},
-  sumneko_lua = {
+  lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },

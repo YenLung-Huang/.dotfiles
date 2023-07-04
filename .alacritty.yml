@@ -1,5 +1,4 @@
 live_config_reload: true
-
 env:
   TERM: xterm-256color
 
@@ -11,17 +10,17 @@ selection:
   save_to_clipboard: true
  
 window:
-  opacity: 0.80
+  opacity: 1.00
   dynamic_padding: false
 
 font:
   normal:
     family: "JetBrainsMono Nerd Font"
     style: Regular
-  size: 14.0
+  size: 12.0
   offset:
-    x: 1
-    y: 1
+    x: 0
+    y: 2
 
 draw_bold_text_with_bright_colors: true
 
