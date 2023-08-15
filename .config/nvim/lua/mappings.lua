@@ -157,9 +157,8 @@ nmap('<leader>gb', ':Git blame<cr>')
 nmap('<leader>gd', ':Gvdiffsplit<cr>')
 nmap('<leader>gs', ':topleft Git<cr>')
 
--- netrw
-nmap('<leader>eo', ':Explore<cr>'); -- explore file current directory
-nmap('<leader>el', ':ex.<cr>'); -- explore project directory list
+-- oil (instead of netrw)
+nmap('<leader>el', ':edit.<cr>'); -- explore project directory list
 
 -- easy align
 nmap('<leader>al', ':EasyAlign<cr>')

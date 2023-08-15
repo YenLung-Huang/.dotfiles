@@ -78,6 +78,10 @@ vim.o.smartcase = true -- case insentive unless capitals used in search
 vim.o.matchtime = 2 -- delay before showing matching paren
 vim.o.mps = vim.o.mps .. ",<:>"
 
+-- With oil we may want to close the netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- White characters
 vim.o.indentexpr = false
 vim.o.autoindent = true

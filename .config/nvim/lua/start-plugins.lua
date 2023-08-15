@@ -72,7 +72,8 @@ require('packer').startup(function(use)
   use 'ntpeters/vim-better-whitespace' -- highlight trailing spaces
   use 'tpope/vim-eunuch' -- wrappers UNIX commands
   use 'tpope/vim-surround' -- surround characters shortcuts
-  use 'tpope/vim-vinegar' -- file browser
+  use { 'stevearc/oil.nvim', config = function() require('oil').setup() end } -- file browser
+
   use 'tpope/vim-unimpaired'
   use 'tpope/vim-repeat'
   use 'tpope/vim-commentary'
