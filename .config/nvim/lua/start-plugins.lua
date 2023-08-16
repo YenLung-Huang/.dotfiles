@@ -20,14 +20,16 @@ require('packer').startup(function(use)
       "williamboman/mason.nvim",
       "williamboman/mason-lspconfig.nvim",
 
-      -- Useful status updates for LSP
-      'j-hui/fidget.nvim',
-
       -- Additional lua configuration, makes nvim stuff amazing
       'folke/neodev.nvim',
     },
   }
 
+  -- Useful status updates for LSP
+  use {
+    'j-hui/fidget.nvim',
+    tag = 'legacy',
+  }
   use { -- Autocompetion
     'hrsh7th/nvim-cmp',
     requires = { 'hrsh7th/cmp-nvim-lsp', 'L3MON4D3/LuaSnip', 'saadparwaiz1/cmp_luasnip', 'onsails/lspkind-nvim' },
@@ -72,7 +74,29 @@ require('packer').startup(function(use)
   use 'ntpeters/vim-better-whitespace' -- highlight trailing spaces
   use 'tpope/vim-eunuch' -- wrappers UNIX commands
   use 'tpope/vim-surround' -- surround characters shortcuts
-  use { 'stevearc/oil.nvim', config = function() require('oil').setup() end } -- file browser
+  use {
+    'stevearc/oil.nvim', -- File browser replace netrw
+    config = function() require('oil').setup({
+        keymaps = {
+          ["g?"] = "actions.show_help",
+          ["<CR>"] = "actions.select",
+          ["<C-s>"] = "actions.select_vsplit",
+          ["<C-h>"] = "actions.select_split",
+          ["<C-t>"] = "actions.select_tab",
+          ["<C-p>"] = "actions.preview",
+          ["<C-c>"] = "actions.close",
+          ["<C-l>"] = "actions.refresh",
+          ["-"] = "actions.parent",
+          ["_"] = "actions.open_cwd",
+          ["`"] = "actions.cd",
+          ["~"] = "actions.tcd",
+          ["g."] = "actions.toggle_hidden",
+          ["y."] = "actions.copy_entry_path",
+          ["."] = "actions.open_cmdline",
+        },
+      })
+    end
+  }
 
   use 'tpope/vim-unimpaired'
   use 'tpope/vim-repeat'
