@@ -2,8 +2,8 @@
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
+vim.g.mapleader = " "
+vim.g.mapsocalleader = "\\"
 
 -- Keymaps helper
 function map(mode, shortcut, command)
@@ -42,26 +42,11 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
--- [[ Highlight on yank ]]
--- See `:help vim.highlight.on_yank()`
-local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
-vim.api.nvim_create_autocmd('TextYankPost', {
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-  group = highlight_group,
-  pattern = '*',
-})
-
 -- clear matches Ctrl+b
 nmap('<C-b>', ':noh<cr>:call clearmatches()<cr>')
 
 -- quick save file, exit file
 nmap('<leader>w', ':w<cr>')
-
--- sane regexes
-nmap('/', '/\\v')
-vmap('/', '/\\v')
 
 nmap('<c-l>', ':nohlsearch<cr>')
 
@@ -79,17 +64,6 @@ nmap('g;', 'g;zz')
 -- Open a Quickfix window for the last search.
 nmap("<leader>?", ":execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>")
 
--- more natural movement with wrap on
-nmap('j', 'gj')
-nmap('k', 'gk')
-vmap('j', 'gj')
-vmap('k', 'gk')
-
--- Easy buffer navigation
--- nmap('<C-h>', '<C-w>h')
--- nmap('<C-j>', '<C-w>j')
--- nmap('<C-k>', '<C-w>k')
--- nmap('<C-l>', '<C-w>l')
 
 -- Reselect visual block after indent/outdent
 vmap('<', '<gv')
