@@ -16,8 +16,7 @@ return {
 			-- Schema information
 			"b0o/SchemaStore.nvim",
 		},
-		config = function() 
-
+		config = function()
 			require("neodev").setup({
 				-- library = {
 				--   plugins = { "nvim-dap-ui" },
@@ -98,6 +97,7 @@ return {
 			local ensure_installed = {
 				"stylua",
 				"lua_ls",
+				"intelephense",
 				-- "tailwind-language-server",
 			}
 
@@ -140,6 +140,7 @@ return {
 
 					vim.keymap.set("n", "<space>cr", vim.lsp.buf.rename, { buffer = 0 })
 					vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, { buffer = 0 })
+					vim.keymap.set("n", "<leader>ds", "builtin.lsp_document_symbols", { buffer = 0 })
 
 					local filetype = vim.bo[bufnr].filetype
 					if disable_semantic_tokens[filetype] then
@@ -167,6 +168,6 @@ return {
 
 			require("lsp_lines").setup()
 			vim.diagnostic.config({ virtual_text = false })
-    end
+		end,
 	},
 }
