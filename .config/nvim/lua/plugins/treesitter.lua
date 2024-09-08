@@ -1,8 +1,23 @@
 return {
-	{
-		"nvim-treesitter/nvim-treesitter",
-		opts = {
-			ensure_installed = {
+  "nvim-treesitter/nvim-treesitter",
+  build = function()
+    require("nvim-treesitter.install").update({ with_sync = true })
+  end,
+  dependencies = {
+    {
+      "JoosepAlviste/nvim-ts-context-commentstring",
+      opts = {
+        custom_calculation = function(_, language_tree)
+          if vim.bo.filetype == "blade" and language_tree._lang ~= "javascript" and language_tree._lang ~= "php" then
+            return "{{-- %s --}}"
+          end
+        end,
+      },
+    },
+    "nvim-treesitter/nvim-treesitter-textobjects",
+  },
+  opts = {
+    ensure_installed = {
 				"bash",
 				"c",
 				"cpp",
@@ -18,33 +33,31 @@ return {
 				"xml",
 				"yaml",
 			},
-			highlight = {
-				enable = true,
-				additional_vim_regex_highlighting = false,
-			},
-			indent = {
-				enable = true,
-			},
-		},
-		config = function(_, opts)
-			local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+    auto_install = true,
+    highlight = {
+      enable = true,
+		  additional_vim_regex_highlighting = false,
+    },
+    -- Needed because treesitter highlight turns off autoindent for php files
+    indent = {
+      enable = true,
+    },
+  },
+  config = function(_, opts)
+    ---@class ParserInfo[]
+    local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+    parser_config.blade = {
+      install_info = {
+        url = "https://github.com/EmranMR/tree-sitter-blade",
+        files = {
+          "src/parser.c",
+          -- 'src/scanner.cc',
+        },
+        branch = "main",
+      },
+      filetype = "blade",
+    }
 
-			parser_config.blade = {
-				install_info = {
-					url = "https://github.com/EmranMR/tree-sitter-blade",
-					files = { "src/parser.c" },
-					branch = "main",
-				},
-				filetype = "blade",
-			}
-
-			vim.filetype.add({
-				pattern = {
-					["*.%.blade%.php"] = "blade",
-				},
-			})
-
-			require("nvim-treesitter.configs").setup(opts)
-		end,
-	},
+    require("nvim-treesitter.configs").setup(opts)
+  end,
 }

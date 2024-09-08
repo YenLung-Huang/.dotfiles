@@ -4,8 +4,6 @@
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 local set = vim.keymap.set
 local k = vim.keycode
-local f = require("custom.f")
-local fn = f.fn
 
 vim.g.mapleader = ","
 vim.g.maplocalleader = "\\"
@@ -65,8 +63,8 @@ set("n", "<right>", "gt")
 
 -- There are builtin keymaps for this now, but I like that it shows
 -- the float when I navigate to the error - so I override them.
-set("n", "]d", fn(vim.diagnostic.jump, { count = 1, float = true }))
-set("n", "[d", fn(vim.diagnostic.jump, { count = -1, float = true }))
+-- set("n", "]d", fn(vim.diagnostic.jump, { count = 1, float = true }))
+-- set("n", "[d", fn(vim.diagnostic.jump, { count = -1, float = true }))
 
 -- These maDpings control the size of splits (height/width)
 set("n", "<M-,>", "<c-w>5<")

@@ -154,6 +154,7 @@ alias tmux='tmux -2'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin/"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
