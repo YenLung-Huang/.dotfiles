@@ -27,16 +27,15 @@ require("options")
 require("terminal")
 
 -- Set up lazy, and load my `lua/custom/plugins/` folder
-require("lazy").setup(
-  {
-    { import = "plugins" },
-    { import = "plugins.lsp" }
-  },{
-  checker = {
-    enabled = true,
-    notify = false,
-  },
-  change_detection = {
-    notify = false,
-  },
+require("lazy").setup({
+	{ import = "plugins" },
+	{ import = "plugins.lsp" },
+}, {
+	checker = {
+		enabled = true,
+		notify = false,
+	},
+	change_detection = {
+		notify = false,
+	},
 })
