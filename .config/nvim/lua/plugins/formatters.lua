@@ -16,7 +16,6 @@ return {
 	},
 	-- This will provide type hinting with LuaLS
 	---@module "conform"
-	---@type conform.setupOpts
 	opts = {
 		-- Define your formatters
 		formatters_by_ft = {
@@ -24,7 +23,8 @@ return {
 			python = { "isort", "black" },
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 			html = { "prettierd", "prettier", stop_after_first = true },
-			php = { "php_cs_fixer" },
+			php = { "php_cs_fixer", env = { PHP_CS_FIXER_IGNORE_ENV = "1" } },
+			blade = { "blade-formatter" },
 		},
 		-- Set default options
 		default_format_opts = {
