@@ -93,21 +93,27 @@ config.cursor_blink_ease_in = "Constant"
 config.cursor_blink_ease_out = "Constant"
 
 config.keys = {
-	-- splitting
+	-- tmux-like pane splitting
 	{
 		mods = "LEADER",
-		key = "-",
-		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
+		key = '"', -- Shift+'
+		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
 	},
 	{
 		mods = "LEADER",
-		key = "|",
-		action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+		key = "%", -- Shift+5
+		action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }),
 	},
 	{
 		mods = "LEADER",
 		key = "z",
 		action = wezterm.action.TogglePaneZoomState,
+	},
+	-- tmux-like pane closing
+	{
+		mods = "LEADER",
+		key = "x",
+		action = wezterm.action.CloseCurrentPane({ confirm = true }),
 	},
 	-- rotate panes
 	{
@@ -134,6 +140,11 @@ config.keys = {
 	split_nav("move", "j"),
 	split_nav("move", "k"),
 	split_nav("move", "l"),
+	-- tmux-like pane navigation
+	{ mods = "LEADER", key = "h", action = wezterm.action.ActivatePaneDirection("Left") },
+	{ mods = "LEADER", key = "j", action = wezterm.action.ActivatePaneDirection("Down") },
+	{ mods = "LEADER", key = "k", action = wezterm.action.ActivatePaneDirection("Up") },
+	{ mods = "LEADER", key = "l", action = wezterm.action.ActivatePaneDirection("Right") },
 
 	{
 		mods = "SUPER",
@@ -150,6 +161,50 @@ config.keys = {
 	-- split_nav("resize", "j"),
 	-- split_nav("resize", "k"),
 	-- split_nav("resize", "l"),
+
+	-- tmux-like tab management
+	{
+		mods = "LEADER",
+		key = "c",
+		action = wezterm.action.SpawnTab("CurrentPaneDomain"),
+	},
+	{
+		mods = "LEADER",
+		key = "n",
+		action = wezterm.action.ActivateTabRelative(1),
+	},
+	{
+		mods = "LEADER",
+		key = "p",
+		action = wezterm.action.ActivateTabRelative(-1),
+	},
+	{
+		mods = "LEADER",
+		key = "&",
+		action = wezterm.action.CloseCurrentTab({ confirm = true }),
+	},
+	{
+		mods = "LEADER",
+		key = ",",
+		action = wezterm.action.PromptInputLine({
+			description = "Enter new name for tab",
+			action = wezterm.action_callback(function(window, pane, line)
+				if line then
+					window:active_tab():set_title(line)
+				end
+			end),
+		}),
+	},
+	-- tmux-like tab selection
+	{ mods = "LEADER", key = "1", action = wezterm.action.ActivateTab(0) },
+	{ mods = "LEADER", key = "2", action = wezterm.action.ActivateTab(1) },
+	{ mods = "LEADER", key = "3", action = wezterm.action.ActivateTab(2) },
+	{ mods = "LEADER", key = "4", action = wezterm.action.ActivateTab(3) },
+	{ mods = "LEADER", key = "5", action = wezterm.action.ActivateTab(4) },
+	{ mods = "LEADER", key = "6", action = wezterm.action.ActivateTab(5) },
+	{ mods = "LEADER", key = "7", action = wezterm.action.ActivateTab(6) },
+	{ mods = "LEADER", key = "8", action = wezterm.action.ActivateTab(7) },
+	{ mods = "LEADER", key = "9", action = wezterm.action.ActivateTab(8) },
 }
 
 return config
