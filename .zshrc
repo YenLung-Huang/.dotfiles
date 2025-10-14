@@ -156,9 +156,28 @@ alias tmux='tmux -2'
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin/"
 
+# Lazy load nvm, node, npm
 export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
+  load_nvm() {
+    unset -f nvm node npm load_nvm
+    . "/opt/homebrew/opt/nvm/nvm.sh"
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+  }
+
+  nvm() {
+    load_nvm
+    nvm "$@"
+  }
+  node() {
+    load_nvm
+    node "$@"
+  }
+  npm() {
+    load_nvm
+    npm "$@"
+  }
+fi
 
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
