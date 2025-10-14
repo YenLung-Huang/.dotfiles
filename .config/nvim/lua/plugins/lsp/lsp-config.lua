@@ -95,7 +95,7 @@ return {
 		})
 
 		-- configure emmet language server
-		lspconfig["emmet_language_server"].setup({
+		lspconfig["emmet_ls"].setup({
 			capabilities = capabilities,
 			on_attach = on_attach,
 		})
