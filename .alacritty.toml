@@ -1,0 +1,260 @@
+# =========================================================
+# Alacritty Configuration - Optimized for MacOS & Tmux
+# =========================================================
+
+# --- 載入配色與全域設定 ---
+[general]
+live_config_reload = true
+import = ["/Users/markhuang/.alacritty-colorscheme/themes/xterm.toml"]
+
+[env]
+# 配合 Tmux 使用時建議設為 xterm-256color 以獲得最佳相容性
+TERM = "xterm-256color"
+
+# --- 視窗外觀 (現代化風格) ---
+[window]
+# "Full": 傳統標題列 / "Transparent": 完全無邊框
+decorations = "Full"
+
+# 啟動模式
+startup_mode = "Windowed"
+dynamic_title = true
+
+# 毛玻璃與透明度 (建議值)
+opacity = 0.90
+blur = true
+
+[window.padding]
+# 增加內距，讓文字不要貼著邊緣，視覺更優雅
+x = 15
+y = 15
+
+# --- 滾動設定 (新增) ---
+[scrolling]
+history = 10000
+multiplier = 3
+
+# --- 字體設定 ---
+[font]
+size = 13.0 # 稍微調大一點點，配合 padding 更易讀
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+[font.offset]
+x = 0
+y = 2
+
+# --- 游標設定 (已修正語法錯誤) ---
+[cursor]
+# 游標樣式
+style = { shape = "Block", blinking = "Always" }
+# 閃爍間隔 (獨立參數)
+blink_interval = 750
+
+[colors.cursor]
+text = "#1d2021"
+cursor = "#fe8019"
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+# --- Tmux 整合核心 ---
+[terminal]
+# 啟動時自動連接名為 "Base" 的 Session，若無則建立
+shell = { program = "/bin/zsh", args = ["-l", "-c", "tmux new-session -A -s Base"] }
+
+[mouse]
+hide_when_typing = false
+
+[selection]
+save_to_clipboard = true
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+
+# --- 快速連結跳轉 (新增功能) ---
+# 按下 Cmd + Shift + U 可快速開啟螢幕上的網址
+[hints]
+alphabet = "jfkdls;ahgurieowpq"
+[[hints.enabled]]
+command = "open"
+hyperlinks = true
+post_processing = true
+mouse = { enabled = true }
+binding = { key = "U", mods = "Command|Shift" }
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\\u0000-\\u001F\\u007F-\\u009F<>\"\\s{-}\\^⟨⟩`]+"
+
+# --- 鍵盤映射 (MacOS -> Tmux Bridge) ---
+# \u0001 是 Ctrl+a 的 Hex code (對應你的 .tmux.conf)
+
+# 1. 字體縮放 (這部分不需要 Prefix，直接對 Alacritty 作用)
+[[keyboard.bindings]]
+key = "Plus"
+mods = "Command"
+action = "IncreaseFontSize"
+
+[[keyboard.bindings]]
+key = "Minus"
+mods = "Command"
+action = "DecreaseFontSize"
+
+[[keyboard.bindings]]
+key = "Key0"
+mods = "Command"
+action = "ResetFontSize"
+
+# 2. 搜尋功能 (Cmd + F) -> 進入 Tmux 複製模式並搜尋
+[[keyboard.bindings]]
+key = "F"
+mods = "Command"
+chars = "\u0001[?" 
+
+# 3. Tmux 視窗/Session 管理
+# Cmd + , -> 重命名視窗 (Tmux: prefix + ,)
+[[keyboard.bindings]]
+key = "Comma"
+mods = "Command"
+chars = "\u0001,"
+
+# Cmd + K -> 向上移動 Pane
+[[keyboard.bindings]]
+key = "K"
+mods = "Command"
+chars = "\u0001k"
+
+# Cmd + T -> 新視窗 (Tmux: prefix + c)
+[[keyboard.bindings]]
+key = "T"
+mods = "Command"
+chars = "\u0001c"
+
+# Cmd + Shift + T -> 獨立 Pane 為新視窗 (Tmux: prefix + !)
+[[keyboard.bindings]]
+key = "T"
+mods = "Command|Shift"
+chars = "\u0001!"
+
+# Cmd + 1~9 -> 切換視窗
+[[keyboard.bindings]]
+key = "Key1"
+mods = "Command"
+chars = "\u00011"
+[[keyboard.bindings]]
+key = "Key2"
+mods = "Command"
+chars = "\u00012"
+[[keyboard.bindings]]
+key = "Key3"
+mods = "Command"
+chars = "\u00013"
+[[keyboard.bindings]]
+key = "Key4"
+mods = "Command"
+chars = "\u00014"
+[[keyboard.bindings]]
+key = "Key5"
+mods = "Command"
+chars = "\u00015"
+[[keyboard.bindings]]
+key = "Key6"
+mods = "Command"
+chars = "\u00016"
+[[keyboard.bindings]]
+key = "Key7"
+mods = "Command"
+chars = "\u00017"
+[[keyboard.bindings]]
+key = "Key8"
+mods = "Command"
+chars = "\u00018"
+[[keyboard.bindings]]
+key = "Key9"
+mods = "Command"
+chars = "\u00019"
+
+# Cmd + L -> 向右移動 Pane 
+[[keyboard.bindings]]
+key = "L"
+mods = "Command"
+chars = "\u0001l"
+
+# Cmd + ] -> 下一個視窗 (Tmux: prefix + n)
+[[keyboard.bindings]]
+key = "N"
+mods = "Command"
+chars = "\u0001n"
+
+# 4. 複製貼上模式
+# Cmd + [ -> 進入複製模式 (Tmux: prefix + [)
+[[keyboard.bindings]]
+key = "LBracket"
+mods = "Command"
+chars = "\u0001["
+
+# Cmd + Shift + [ -> 貼上 (Tmux: prefix + ]) 
+# 修正：改為發送 ]，因為你的 tmux.conf 沒有 bind p
+[[keyboard.bindings]]
+key = "LBracket"
+mods = "Command|Shift"
+chars = "\u0001]"
+
+# 5. 分割視窗
+# Cmd + D -> 垂直分割 (Tmux: prefix + %) -> 實際上看起來是左右分割
+[[keyboard.bindings]]
+key = "D"
+mods = "Command"
+chars = "\u0001%"
+
+# Cmd + Shift + D -> 水平分割 (Tmux: prefix + ") -> 實際上看起來是上下分割
+[[keyboard.bindings]]
+key = "D"
+mods = "Command|Shift"
+chars = "\u0001\""
+
+# 6. Pane 管理
+# Cmd + Shift + W -> 這裡維持 Detach (d)，如果你想關閉 Pane 請改為 x
+[[keyboard.bindings]]
+key = "W"
+mods = "Command|Shift"
+chars = "\u0001d"
+
+# Cmd + X -> 刪除當前 Pane (Tmux: prefix + x)
+[[keyboard.bindings]]
+key = "X"
+mods = "Command"
+chars = "\u0001x"
+
+# Cmd + Z -> 最大化當前 Pane (Tmux: prefix + z)
+[[keyboard.bindings]]
+key = "Z"
+mods = "Command"
+chars = "\u0001z"
+
+# 7. 編輯器整合
+# Cmd + S -> Vim 存檔 (:w)
+# 這不需要 Prefix，直接發送 ESC + :w
+[[keyboard.bindings]]
+key = "S"
+mods = "Command"
+chars = "\u001B:w\r"
+# --- 額外推薦：Cmd + H/J/K/L 對應 Tmux 方向切換 ---
+
+# Cmd + J -> 下 (Tmux: prefix + j)
+[[keyboard.bindings]]
+key = "J"
+mods = "Command"
+chars = "\u0001j"
+
+# Cmd + H -> 左 (Tmux: prefix + h)
+[[keyboard.bindings]]
+key = "H"
+mods = "Command"
+chars = "\u0001h"

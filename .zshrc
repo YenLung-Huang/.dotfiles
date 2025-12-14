@@ -1,100 +1,50 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+# =============================================================================
+# 1. Powerlevel10k Instant Prompt (必須放在最頂端)
+# =============================================================================
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Path to your oh-my-zsh installation.
-export ZSH="/Users/$USER/.oh-my-zsh"
-# --files: List files that would be searched but do not search
-# --no-ignore: Do not respect .gitignore, etc...
-# --hidden: Search hidden files and folders
-# --follow: Follow symlinks
-# --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-# export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
-export FZF_DEFAULT_COMMAND="rg --files --no-ignore --hidden --follow --glob '!.git/*'"
+# =============================================================================
+# 2. 環境變數 & PATH 設定 (Environment)
+# =============================================================================
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
 export EDITOR="nvim"
-# composer bin
-# export PATH=~/.composer/vendor/bin:$PATH
-alias "composer"="php /usr/local/bin/composer"
-export PATH="$PATH:$HOME/.composer/vendor/bin"
 
+# 編譯相關 Flags (保留你原本針對 Intel/Rosetta 的設定)
 export LDFLAGS="-L/usr/local/opt/libffi/lib"
 export CPPFLAGS="-I/usr/local/opt/libffi/include"
 
-# rabbitmq
-export PATH=$PATH:/usr/local/opt/rabbitmq/sbin
+# 整合所有的 PATH 設定，避免散落在各處
+# 注意：將常用的放在前面
+export PATH="$HOME/.composer/vendor/bin:$PATH"
+export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+export PATH="/opt/homebrew/opt/mysql@8.4/bin:$PATH"
+export PATH="$PATH:/usr/local/opt/rabbitmq/sbin"
+export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin/"
+# 如果有原本手動的 Composer bin
+# export PATH=~/.composer/vendor/bin:$PATH
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+# =============================================================================
+# 3. Oh-My-Zsh 設定
+# =============================================================================
+export ZSH="$HOME/.oh-my-zsh"
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+# 關閉 OMZ 的主題，因為下面會手動載入 Powerlevel10k，避免重複載入
+ZSH_THEME=""
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
+# OMZ 更新設定
 DISABLE_UPDATE_PROMPT="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS=true
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="true"
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
+# Plugins
+# 注意：已移除 'fd'，因為它是 command line tool，不是 standard plugin
+# 請確保你有透過 brew install fd 安裝實體工具
 plugins=(
   brew
   docker
   docker-compose
-  fd
   git
   zsh-completions
   zsh-autosuggestions
@@ -103,60 +53,46 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-# Mac arm brew
-alias brew='arch -arm64 brew'
-# cd
-alias projapi='cd ~/Owlting/Projects/ERP_api'
+# =============================================================================
+# 4. Aliases (別名)
+# =============================================================================
+# System
 alias ..2='cd ../..'
 alias ..3='cd ../../..'
 alias ..4='cd ../../../..'
+alias zshconfig="nvim ~/.zshrc" # 方便快速編輯設定檔
 
-# tig alias
-alias tis='tig status' # show git status
-alias til='tig log' # show git log
-alias tib='tig blame -C' # git-blame a file detecting copies and renames
+# Brew (Apple Silicon 兼容模式)
+alias brew='arch -arm64 brew'
 
-# vim
+# Editor
 alias vi="nvim"
 alias vim="nvim"
 alias vimdiff='nvim -d'
 
-alias tmux='tmux -2'
+# Git / Tig
+alias tis='tig status'
+alias til='tig log'
+alias tib='tig blame -C'
 
+# Tools
+alias tmux='tmux -2'
+alias composer="php /usr/local/bin/composer"
+
+# Project Shortcuts
+alias projapi='cd ~/Owlting/Projects/ERP_api'
+
+# =============================================================================
+# 5. 工具整合 (FZF, NVM)
+# =============================================================================
+
+# --- FZF 設定 ---
+# 設定搜尋指令 (使用 ripgrep)
+export FZF_DEFAULT_COMMAND="rg --files --no-ignore --hidden --follow --glob '!.git/*'"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
-export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin/"
-
-# Lazy load nvm, node, npm
+# --- NVM (Lazy Load) ---
+# 延遲載入 NVM 以加速 Shell 啟動時間
 export NVM_DIR="$HOME/.nvm"
 if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
   load_nvm() {
@@ -165,21 +101,15 @@ if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
   }
 
-  nvm() {
-    load_nvm
-    nvm "$@"
-  }
-  node() {
-    load_nvm
-    node "$@"
-  }
-  npm() {
-    load_nvm
-    npm "$@"
-  }
+  nvm() { load_nvm; nvm "$@"; }
+  node() { load_nvm; node "$@"; }
+  npm() { load_nvm; npm "$@"; }
 fi
 
+# =============================================================================
+# 6. Powerlevel10k Theme 設定 (必須放在底部)
+# =============================================================================
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# 載入 p10k 設定檔
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
