@@ -107,7 +107,7 @@ opt.wildignore =
 -- ==========================================================
 
 -- 1. 建立一個群組來管理所有相關的自動命令
-local cursor_grp = vim.api.nvim_create_augroup("SmartCursorLine", { clear = true })
+local cursor_grp = vim.api.nvim_create_augroup("SmartCursorLine", { clear = false })
 
 -- 2. 基礎設定：全域開啟 cursorline
 vim.opt.cursorline = true
@@ -138,18 +138,18 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 	pattern = "*",
 	callback = function()
 		vim.opt_local.cursorline = true -- 確保是開啟的
-		-- 設定高亮：深藍色背景，粗體
+		-- 設定高亮：深藍色背景，粗體 (插入模式顏色)
 		vim.api.nvim_set_hl(0, "CursorLine", { bg = "#000055", bold = true })
 	end,
 })
 
--- 離開插入模式：清除自訂顏色 (恢復成你原本主題的樣子)
+-- 離開插入模式：恢復成你原本主題的顏色
 vim.api.nvim_create_autocmd("InsertLeave", {
 	group = cursor_grp,
 	pattern = "*",
 	callback = function()
 		vim.opt_local.cursorline = true
 		-- 清除 CursorLine 的屬性，讓它自動繼承原本 ColorScheme 的設定
-		vim.api.nvim_set_hl(0, "CursorLine", {})
+		vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2a2b3c", bold = false })
 	end,
 })

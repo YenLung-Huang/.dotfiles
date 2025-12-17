@@ -21,7 +21,7 @@ startup_mode = "Windowed"
 dynamic_title = true
 
 # 毛玻璃與透明度 (建議值)
-opacity = 0.90
+opacity = 0.85
 blur = true
 
 [window.padding]

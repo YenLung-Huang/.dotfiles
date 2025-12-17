@@ -1,9 +1,10 @@
 return {
 	{
 		"catppuccin/nvim",
-		lazy = true,
 		name = "catppuccin",
+		priority = 1000,
 		opts = {
+			transparent_background = true, -- <--- 新增這一行
 			integrations = {
 				aerial = true,
 				alpha = true,
@@ -40,5 +41,10 @@ return {
 				which_key = true,
 			},
 		},
+		-- 修改 2: 加上這個來實際套用主題
+		config = function(_, opts)
+			require("catppuccin").setup(opts)
+			vim.cmd.colorscheme("catppuccin")
+		end,
 	},
 }
