@@ -49,8 +49,9 @@ return {
 	},
 	config = function(_, opts)
 		---@class ParserInfo[]
-		local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-		parser_config.blade = {
+		local parsers = require("nvim-treesitter.parsers")
+
+		parsers.blade = {
 			install_info = {
 				url = "https://github.com/EmranMR/tree-sitter-blade",
 				files = {
@@ -62,6 +63,6 @@ return {
 			filetype = "blade",
 		}
 
-		require("nvim-treesitter.configs").setup(opts)
+		require("nvim-treesitter.config").setup(opts)
 	end,
 }

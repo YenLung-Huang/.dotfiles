@@ -27,7 +27,7 @@ return {
 			markdown = { "prettier" },
 			graphql = { "prettier" },
 			lua = { "stylua" },
-			python = { "isort", "black" },
+
 			php = { "php_cs_fixer" },
 			blade = { "blade-formatter" },
 		},
@@ -54,7 +54,8 @@ return {
 						".prettierrc.yml",
 					}
 
-					local found = util.find_file(config_files, { upward = true, path = ctx.dirname })
+					-- conform.util.root_file returns a function, so we call it immediately
+					local found = vim.fs.find(config_files, { upward = true, path = ctx.dirname })[1]
 					if found then
 						-- 找到設定檔 → 不加參數
 						return {}

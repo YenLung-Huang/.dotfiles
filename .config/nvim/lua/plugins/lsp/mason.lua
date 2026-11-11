@@ -37,7 +37,7 @@ return {
 				"emmet_ls",
 				"prismals",
 				"pyright",
-				"volar",
+				"vue_ls",
 				"intelephense",
 			},
 		})

@@ -1,12 +1,16 @@
 return {
 	{
-		"mrjones2014/smart-splits.nvim",
+		"smart-splits-nvim/smart-splits.nvim",
 		lazy = false,
+		dependencies = {
+			"smart-splits-nvim/backend-tmux", -- add the backend for your multiplexer
+		},
 
 		-- === 新增這段 opts 設定 ===
 		opts = {
-			-- 如果有 TMUX 環境變數才啟用 tmux 整合，否則設為 nil (關閉)
-			multiplexer_integration = vim.env.TMUX and "tmux" or nil,
+			mux = {
+				backend = "smart-splits-backend-tmux", -- moved from multiplexer_integration = 'tmux'
+			},
 		},
 		-- ========================
 
